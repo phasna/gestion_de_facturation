@@ -5,9 +5,9 @@ import Nav from './compenents/campany/Nav';
 
 
 import Liste_clients from './compenents/campany/Liste_clients.jsx';
-import Ajouter_client from './compenents/campany/Ajouter_client.jsx';
+import Add_client from './compenents/campany/Add_client';
 import Profile from './compenents/campany/Profile.jsx';
-import Accueil from "./compenents/campany/Accueil.jsx";
+import Accueil from "./compenents/campany/Accueil";
 
 const Menu = () => (
     <div className="w-1/4 p-4 bg-gray-200">
@@ -39,7 +39,7 @@ const Menu = () => (
             </li>
             <li>
                 <NavLink
-                    to="/Ajouter_Clients"
+                    to="/Add_clients"
                     className={({ isActive }) =>
                         isActive
                             ? 'flex items-center p-4 rounded bg-black hover:bg-opacity-25 text-white transition-all duration-300 ease-in-out'
@@ -75,9 +75,9 @@ const App = () => {
                 <div className="w-3/4 p-4">
                     <Routes>
                         <Route path="/" element={<Accueil />} />
-                        <Route path="/about" element={<Liste_clients />} />
-                        <Route path="/services" element={<Ajouter_client />} />
-                        <Route path="/contact" element={<Profile />} />
+                        <Route path="/Liste_clients" element={<Liste_clients />} />
+                        <Route path="/Add_client" element={<Add_client />} />
+                        <Route path="/Profile" element={<Profile />} />
                     </Routes>
                 </div>
             </div>

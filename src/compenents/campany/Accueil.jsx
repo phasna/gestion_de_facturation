@@ -133,6 +133,7 @@ function Dashboard() {
                         </div>
                     </div>
                 </div>
+
                 <h2 className="text-4xl mb-4 text-white my-10">Liste des Clients</h2>
 
                 <div className="space-y-5">
