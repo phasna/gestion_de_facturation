@@ -6,6 +6,7 @@ import Nav from './compenents/campany/Nav';
 
 import Liste_clients from './compenents/campany/Liste_clients.jsx';
 import Add_client from './compenents/campany/Add_client';
+
 import Profile from './compenents/campany/Profile.jsx';
 import Accueil from "./compenents/campany/Accueil";
 
@@ -39,7 +40,7 @@ const Menu = () => (
             </li>
             <li>
                 <NavLink
-                    to="/Add_clients"
+                    to="/Add_client"
                     className={({ isActive }) =>
                         isActive
                             ? 'flex items-center p-4 rounded bg-black hover:bg-opacity-25 text-white transition-all duration-300 ease-in-out'
@@ -48,6 +49,7 @@ const Menu = () => (
                 >
                     <FaServicestack className="mr-3" /> Ajouter des clients
                 </NavLink>
+
             </li>
             <li>
                 <NavLink

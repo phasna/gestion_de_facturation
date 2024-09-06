@@ -1,10 +1,23 @@
 import { useState } from 'react';
 
-const Add_client = () => {
-    const [showDetails, setShowDetails] = useState(false);
+const FacturationForm = () => {
+    const [prestations, setPrestations] = useState([{ service: '', price: '' }]);
+
+    // Fonction pour ajouter une nouvelle prestation
+    const addPrestation = () => {
+        setPrestations([...prestations, { service: '', price: '' }]);
+    };
+
+    // Fonction pour gérer les changements dans les champs
+    const handlePrestationChange = (index, e) => {
+        const { name, value } = e.target;
+        const newPrestations = [...prestations];
+        newPrestations[index][name] = value;
+        setPrestations(newPrestations);
+    };
 
     return (
-        <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+        <div className="max-w-full mx-auto p-6 bg-white shadow-md rounded-lg">
             <h2 className="text-2xl font-semibold mb-6">Formulaire de Facturation</h2>
 
             <form className="space-y-6">
@@ -81,45 +94,49 @@ const Add_client = () => {
                     />
                 </div>
 
-                {/* Bouton pour afficher plus de prestations */}
-                <button
-                    type="button"
-                    onClick={() => setShowDetails(!showDetails)}
-                    className="text-blue-600 hover:text-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >
-                    {showDetails ? 'Masquer les prestations' : 'Afficher plus de prestations'}
-                </button>
-
-                {showDetails && (
-                    <div className="space-y-4 mt-4">
-                        {/* Prestations */}
+                {/* Prestations */}
+                {prestations.map((prestation, index) => (
+                    <div key={index} className="space-y-4 mt-4">
                         <div>
-                            <label htmlFor="service" className="block text-sm font-medium text-gray-700">Prestation</label>
+                            <label htmlFor={`service-${index}`} className="block text-sm font-medium text-gray-700">Prestation</label>
                             <input
                                 type="text"
-                                id="service"
+                                id={`service-${index}`}
                                 name="service"
+                                value={prestation.service}
+                                onChange={(e) => handlePrestationChange(index, e)}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 placeholder="Prestation fournie"
                             />
                         </div>
 
                         <div>
-                            <label htmlFor="price" className="block text-sm font-medium text-gray-700">Prix</label>
+                            <label htmlFor={`price-${index}`} className="block text-sm font-medium text-gray-700">Prix</label>
                             <input
                                 type="number"
-                                id="price"
+                                id={`price-${index}`}
                                 name="price"
+                                value={prestation.price}
+                                onChange={(e) => handlePrestationChange(index, e)}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 placeholder="Prix de la prestation"
                             />
                         </div>
                     </div>
-                )}
+                ))}
+
+                {/* Bouton pour ajouter plus de prestations */}
+                <button
+                    type="button"
+                    onClick={addPrestation}
+                    className="mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                >
+                    Ajouter une prestation +
+                </button>
 
                 <button
                     type="submit"
-                    className="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="w-full mt-6 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     Soumettre
                 </button>
@@ -128,5 +145,4 @@ const Add_client = () => {
     );
 };
 
-
-export default Add_client;
+export default FacturationForm;
