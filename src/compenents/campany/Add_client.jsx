@@ -1,37 +1,46 @@
-import { useState } from 'react';
+import { motion } from 'framer-motion';
+import {useState} from "react";
 
 const FacturationForm = () => {
-    const [prestations, setPrestations] = useState([{ service: '', price: '' }]);
+    const [isOpen, setIsOpen] = useState(false);
 
-    // Fonction pour ajouter une nouvelle prestation
-    const addPrestation = () => {
-        setPrestations([...prestations, { service: '', price: '' }]);
-    };
 
-    // Fonction pour gérer les changements dans les champs
-    const handlePrestationChange = (index, e) => {
-        const { name, value } = e.target;
-        const newPrestations = [...prestations];
-        newPrestations[index][name] = value;
-        setPrestations(newPrestations);
-    };
 
     return (
-        <div className="max-w-full mx-auto p-6 bg-white shadow-md rounded-lg">
-            <h2 className="text-2xl font-semibold mb-6">Formulaire de Facturation</h2>
+        <motion.div
+            onClick={() => setIsOpen(!isOpen)}
+            initial={{opacity: 0, scale: 0.8}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.5}}
+            className="max-w-full h-screen mx-auto p-6 ">
+            <h2 className="text-2xl font-semibold mb-6">Crée nouveau client</h2>
 
             <form className="space-y-6">
                 {/* Coordonnées */}
-                <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nom</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Votre nom"
-                        required
-                    />
+                <div className={"flex flex-row space-x-3 "}>
+                    <div className={"w-full"}>
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nom</label>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Nom du client"
+                            required
+                        />
+                    </div>
+
+                    <div className={"w-full"}>
+                        <label htmlFor="Prénom" className="block text-sm font-medium text-gray-700">Prénom</label>
+                        <input
+                            type="Prénom"
+                            id="Prénom"
+                            name="Prénom"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Prénom du client"
+                            required
+                        />
+                    </div>
                 </div>
 
                 <div>
@@ -41,7 +50,7 @@ const FacturationForm = () => {
                         id="email"
                         name="email"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Votre email"
+                        placeholder="Email du client"
                         required
                     />
                 </div>
@@ -53,35 +62,36 @@ const FacturationForm = () => {
                         id="phone"
                         name="phone"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Votre téléphone"
+                        placeholder="Téléphone du client"
                     />
                 </div>
 
                 {/* Adresse de facturation */}
-                <div>
+                <div className={"flex flex-row space-x-3"}>
+                <div className={"w-full"}>
                     <label htmlFor="address" className="block text-sm font-medium text-gray-700">Adresse</label>
                     <input
                         type="text"
                         id="address"
                         name="address"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Votre adresse"
+                        placeholder="Adresse du client"
                         required
                     />
                 </div>
 
-                <div>
+                <div className={"w-full"}>
                     <label htmlFor="city" className="block text-sm font-medium text-gray-700">Ville</label>
                     <input
                         type="text"
                         id="city"
                         name="city"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Votre ville"
+                        placeholder="Ville du client"
                         required
                     />
                 </div>
-
+                </div>
                 <div>
                     <label htmlFor="zip" className="block text-sm font-medium text-gray-700">Code Postal</label>
                     <input
@@ -89,59 +99,25 @@ const FacturationForm = () => {
                         id="zip"
                         name="zip"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Votre code postal"
+                        placeholder="Code postal du client"
                         required
                     />
                 </div>
 
-                {/* Prestations */}
-                {prestations.map((prestation, index) => (
-                    <div key={index} className="space-y-4 mt-4">
-                        <div>
-                            <label htmlFor={`service-${index}`} className="block text-sm font-medium text-gray-700">Prestation</label>
-                            <input
-                                type="text"
-                                id={`service-${index}`}
-                                name="service"
-                                value={prestation.service}
-                                onChange={(e) => handlePrestationChange(index, e)}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Prestation fournie"
-                            />
-                        </div>
+                <div>
 
-                        <div>
-                            <label htmlFor={`price-${index}`} className="block text-sm font-medium text-gray-700">Prix</label>
-                            <input
-                                type="number"
-                                id={`price-${index}`}
-                                name="price"
-                                value={prestation.price}
-                                onChange={(e) => handlePrestationChange(index, e)}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Prix de la prestation"
-                            />
-                        </div>
-                    </div>
-                ))}
 
-                {/* Bouton pour ajouter plus de prestations */}
-                <button
-                    type="button"
-                    onClick={addPrestation}
-                    className="mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                >
-                    Ajouter une prestation +
-                </button>
+
 
                 <button
                     type="submit"
-                    className="w-full mt-6 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    className="w-1/5 mt-6 px-4 py-2 bg-black text-white font-semibold rounded-md shadow-sm hover:bg-opacity-65 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
-                    Soumettre
+                    Envoyer
                 </button>
+                </div>
             </form>
-        </div>
+        </motion.div>
     );
 };
 

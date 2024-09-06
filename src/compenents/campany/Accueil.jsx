@@ -93,23 +93,26 @@ const pieOptions = {
 
 const ClientCard = ({ client }) => (
     <div className="bg-gray-200 p-4 rounded shadow flex items-center justify-between">
-        <div className="flex items-center">
-            <FaUser className="text-blue-500 mr-5" />
-            {client.name}
+        <div className="flex items-center space-x-4">
+            <FaUser className="text-blue-500"/>
+            <span>{client.name}</span>
         </div>
-        <div className="flex space-x-7">
-            <FaEye className="text-gray-600 cursor-pointer hover:text-blue-500" title="Voir" />
-            <button className="text-sm border-2 rounded-full border-black px-5 py-1 hover:bg-black hover:text-white">Envoyer</button>
-            <FaDownload className="text-gray-600 cursor-pointer hover:text-green-500" title="Télécharger" />
-            <FaEllipsisV className="text-gray-600 cursor-pointer hover:text-gray-900" title="Options" />
+        <div className="flex items-center space-x-4">
+            <FaEye className="text-gray-600 cursor-pointer hover:text-blue-500" title="Voir"/>
+            <button className="text-sm border-2 border-black rounded-full px-4 py-1 hover:bg-black hover:text-white">
+                Envoyer
+            </button>
+            <FaDownload className="text-gray-600 cursor-pointer hover:text-green-500" title="Télécharger"/>
+            <FaEllipsisV className="text-gray-600 cursor-pointer hover:text-gray-900" title="Options"/>
         </div>
     </div>
+
 );
 
 const clients = [
-    { id: 1, name: 'Alice Smith' },
-    { id: 2, name: 'Bob Johnson' },
-    { id: 3, name: 'Charlie Brown' },
+    {id: 1, name: 'Alice Smith'},
+    {id: 2, name: 'Bob Johnson'},
+    {id: 3, name: 'Charlie Brown'},
 ];
 
 function Dashboard() {
@@ -122,27 +125,33 @@ function Dashboard() {
                     <div className="bg-gray-100 p-20 rounded shadow col-span-2">
                         <h2 className="text-xl font-bold mb-2">Statistiques</h2>
                         <div className="flex-grow">
-                            <Line data={lineData} options={lineOptions} />
+                            <Line data={lineData} options={lineOptions}/>
                         </div>
                     </div>
 
                     <div className="bg-gray-100 p-20 rounded shadow">
                         <h2 className="text-xl font-bold mb-2">Répartition du Chiffre d'Affaires</h2>
                         <div className="flex-grow">
-                            <Pie data={pieData} options={pieOptions} />
+                            <Pie data={pieData} options={pieOptions}/>
                         </div>
                     </div>
                 </div>
 
                 <h2 className="text-4xl mb-4 text-black my-10">Liste des Clients</h2>
 
-                <div className="space-y-5">
-                    {clients.map((client) => (
-                        <ClientCard key={client.id} client={client} />
-                    ))}
+                <div>
+                    <div className="space-y-5 text-xl">
+                        {clients.map((client) => (
+                            <ClientCard key={client.id} client={client}/>
+                        ))}
+                    </div>
+
                 </div>
-                <div className="flex justify-center items-center mt-5">
-                    <button className="text-white border-2 rounded-full border-white py-4 px-5 bg-black hover:bg-opacity-50 hover:text-black text-center w-2/6">Afficher plus</button>
+                <div className="flex justify-center items-center mt-5 w-full">
+                    <button
+                        className="text-white border-2 rounded-full border-white py-3 bg-black hover:bg-opacity-50 hover:text-black w-2/6">
+                        Afficher plus
+                    </button>
                 </div>
             </div>
         </div>
