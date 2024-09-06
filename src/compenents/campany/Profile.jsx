@@ -101,7 +101,7 @@ const Profile = () => {
 
                 {/* Boutons */}
                 <div className="flex justify-between mt-6">
-                    <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600">
+                    <button className="bg-black text-white font-bold py-2 px-4 rounded-md hover:bg-opacity-70">
                         Enregistrer
                     </button>
                     <button className="bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded-md hover:bg-gray-400">
