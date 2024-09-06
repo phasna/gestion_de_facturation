@@ -1,6 +1,16 @@
+import { motion } from 'framer-motion';
+import {useState} from "react";
+
 const Profile = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
-        <div className="max-w-full mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
+        <motion.div
+            onClick={() => setIsOpen(!isOpen)}
+            initial={{opacity: 0, scale: 0.8}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.5}}
+            className="max-w-full mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
             <h1 className="text-3xl font-bold mb-6 text-center">Profil de l'utilisateur</h1>
             <div className="space-y-4">
                 {/* Nom */}
@@ -99,7 +109,7 @@ const Profile = () => {
                     </button>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
