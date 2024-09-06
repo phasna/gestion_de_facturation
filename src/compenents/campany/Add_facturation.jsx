@@ -30,7 +30,7 @@ const AddFacturation = () => {
             transition={{ duration: 0.5 }}
             className="max-w-full h-screen mx-auto p-6"
         >
-            <h2 className="text-2xl font-semibold mb-6">Crée une Facture</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-center">Crée une Facture</h2>
 
             <form className="space-y-6">
                 <div>

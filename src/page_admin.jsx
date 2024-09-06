@@ -1,14 +1,7 @@
 import  { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-router-dom';
 
-/* Importation des composants */
-import Nav from './compenents/campany/Nav';
-import Liste_clients from './compenents/campany/Liste_clients.jsx';
-import Add_client from './compenents/campany/Add_client';
-import Add_facturation from './compenents/campany/Add_facturation';
-import Profile from './compenents/campany/Profile.jsx';
-import Accueil from "./compenents/campany/Accueil";
-import UpdateUser from "./compenents/campany/UpdateUser.jsx";
+
 
 /* Page Facturation en PDF */
 import Facturation from "./compenents/Facturation/Facturation.jsx";
@@ -177,32 +170,6 @@ const Menu = () => {
     );
 };
 
-const App = () => {
-    return (
-        <div>
-            <Nav/>
-            <Router>
-                <div className="flex">
-                    <Menu/>
-                    <div className="w-3/4 p-4">
-                        <Routes>
-                            <Route path="/" element={<Accueil/>}/>
-                            <Route path="/Liste_clients" element={<Liste_clients/>}/>
-                            <Route path="/Add_client" element={<Add_client/>}/>
-                            <Route path="/Add_facturation" element={<Add_facturation/>}/>
-                            <Route path="/Profile" element={<Profile />} />
-                            <Route path="/Add_user" element={<Add_user />} />
-                            <Route path="/Devie" element={<Devie />} />
 
-                            <Route path="/UpdateUser" element={<UpdateUser />} />
-
-
-                        </Routes>
-                    </div>
-                </div>
-            </Router>
-        </div>
-    );
-};
 
 export default App;
