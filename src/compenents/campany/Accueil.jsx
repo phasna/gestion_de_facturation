@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { FaUser, FaHome, FaInfoCircle, FaServicestack, FaEnvelope, FaEye, FaDownload, FaEllipsisV } from 'react-icons/fa'; // Ajout des icônes supplémentaires
 import { Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import user_01 from '../../assets/img/user_1.png';
+import user_02 from '../../assets/img/user_2.png';
+import user_03 from '../../assets/img/user_3.png';
+import {Link} from "react-router-dom";
+import {IoAddCircle} from "react-icons/io5";
+
 
 ChartJS.register(
     CategoryScale,
@@ -92,16 +98,13 @@ const pieOptions = {
 };
 
 const ClientCard = ({ client }) => (
-    <div className="bg-gray-200 p-4 rounded shadow flex items-center justify-between">
+    <div className="bg-gray-200 rounded shadow flex items-center justify-between pr-5">
         <div className="flex items-center space-x-4">
-            <FaUser className="text-blue-500"/>
+            <img src={client.img} alt="" className={"w-20 h-20"}/>
             <span>{client.name}</span>
         </div>
         <div className="flex items-center space-x-4">
             <FaEye className="text-gray-600 cursor-pointer hover:text-blue-500" title="Voir"/>
-            <button className="text-sm border-2 border-black rounded-full px-4 py-1 hover:bg-black hover:text-white">
-                Envoyer
-            </button>
             <FaDownload className="text-gray-600 cursor-pointer hover:text-green-500" title="Télécharger"/>
             <FaEllipsisV className="text-gray-600 cursor-pointer hover:text-gray-900" title="Options"/>
         </div>
@@ -110,9 +113,9 @@ const ClientCard = ({ client }) => (
 );
 
 const clients = [
-    {id: 1, name: 'Alice Smith'},
-    {id: 2, name: 'Bob Johnson'},
-    {id: 3, name: 'Charlie Brown'},
+    {id: 1, name: 'Alice Smith',img: user_01},
+    {id: 2, name: 'Bob Johnson',img: user_02},
+    {id: 3, name: 'Charlie Brown',img: user_03},
 ];
 
 function Dashboard() {
@@ -148,11 +151,14 @@ function Dashboard() {
 
                 </div>
                 <div className="flex justify-center items-center mt-5 w-full">
-                    <button
-                        className="text-white border-2 rounded-full border-white py-3 bg-black hover:bg-opacity-50 hover:text-black w-2/6">
-                        Afficher plus
-                    </button>
+                    <Link to="/" className="w-1/5">
+                        <button
+                            className="border-2 rounded-xl py-3 px-10 border-black bg-black hover:bg-opacity-70 text-white flex items-center justify-center space-x-4 w-full">
+                            <span className="text-lg">afficher plus</span>
+                        </button>
+                    </Link>
                 </div>
+
             </div>
         </div>
     );

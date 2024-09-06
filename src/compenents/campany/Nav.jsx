@@ -8,6 +8,7 @@ const Header = () => {
             {/* Logo à gauche */}
             <div className="flex items-center">
 
+
                 <img src={logo} alt="Logo" className="h-32 w-32" />
             </div>
 
