@@ -100,7 +100,7 @@ const App = () => {
                             <Route path="/Add_client" element={<Add_client />} />
                             <Route path="/Add_facturation" element={<Add_facturation />} />
                             <Route path="/Profile" element={<Profile />} />
-                            <Route path="/FacturationPdf" element={<Facturation />} />
+                            <Route path="/Facturation" element={<Facturation />} />
                         </Routes>
                     </div>
                 </div>
