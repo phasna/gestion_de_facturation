@@ -9,6 +9,9 @@ import Add_client from './compenents/campany/Add_client';
 
 import Profile from './compenents/campany/Profile.jsx';
 import Accueil from "./compenents/campany/Accueil";
+import Identifian from "./compenents/Connection/Identifian.jsx"
+
+import Mdpoublier from "./compenents/Connection/mdpoublier.jsx";
 
 const Menu = () => (
     <div className="w-1/4 p-4 bg-gray-200">
@@ -76,10 +79,13 @@ const App = () => {
                 <Menu />
                 <div className="w-3/4 p-4">
                     <Routes>
+                        <Route path="/Identifian" element={<Identifian />} />
+                        <Route path="/Mdpoublier" element={<Mdpoublier />} />
                         <Route path="/" element={<Accueil />} />
                         <Route path="/Liste_clients" element={<Liste_clients />} />
                         <Route path="/Add_client" element={<Add_client />} />
                         <Route path="/Profile" element={<Profile />} />
+
                     </Routes>
                 </div>
             </div>
