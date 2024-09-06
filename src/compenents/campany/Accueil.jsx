@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { FaUser, FaHome, FaInfoCircle, FaServicestack, FaEnvelope, FaEye, FaDownload, FaEllipsisV } from 'react-icons/fa'; // Ajout des icônes supplémentaires
+import { useState, useEffect } from 'react';
+import { FaUser, FaEye, FaDownload, FaEllipsisV } from 'react-icons/fa'; // Ajout des icônes supplémentaires
 import { Line, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 
@@ -95,7 +95,7 @@ const ClientCard = ({ client }) => (
     <div className="bg-gray-200 p-4 rounded shadow flex items-center justify-between">
         <div className="flex items-center space-x-4">
             <FaUser className="text-blue-500"/>
-            <span>{client.name}</span>
+            <span>{client.nom} {client.prenom}</span> {/* Afficher nom et prénom */}
         </div>
         <div className="flex items-center space-x-4">
             <FaEye className="text-gray-600 cursor-pointer hover:text-blue-500" title="Voir"/>
@@ -106,17 +106,39 @@ const ClientCard = ({ client }) => (
             <FaEllipsisV className="text-gray-600 cursor-pointer hover:text-gray-900" title="Options"/>
         </div>
     </div>
-
 );
 
-const clients = [
-    {id: 1, name: 'Alice Smith'},
-    {id: 2, name: 'Bob Johnson'},
-    {id: 3, name: 'Charlie Brown'},
-];
-
 function Dashboard() {
-    const [activeMenu, setActiveMenu] = useState('Home');
+    const [clients, setClients] = useState([]);  // Stocker les clients
+    const [loading, setLoading] = useState(true);  // Indicateur de chargement
+    const [error, setError] = useState(null);  // Gestion des erreurs
+
+    // Récupérer les clients depuis l'API Django
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/factures/clients/')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des clients');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setClients(data);  // Stocker les clients dans le state
+                setLoading(false);  // Désactiver le chargement
+            })
+            .catch(error => {
+                setError(error.message);  // Gérer les erreurs
+                setLoading(false);
+            });
+    }, []);
+
+    if (loading) {
+        return <div>Chargement des clients...</div>;  // Affichage pendant le chargement
+    }
+
+    if (error) {
+        return <div>Erreur : {error}</div>;  // Afficher l'erreur si elle survient
+    }
 
     return (
         <div className="flex min-h-screen  text-3xl relative">
@@ -139,14 +161,12 @@ function Dashboard() {
 
                 <h2 className="text-4xl mb-4 text-black my-10">Liste des Clients</h2>
 
-                <div>
-                    <div className="space-y-5 text-xl">
-                        {clients.map((client) => (
-                            <ClientCard key={client.id} client={client}/>
-                        ))}
-                    </div>
-
+                <div className="space-y-5 text-xl">
+                    {clients.map((client) => (
+                        <ClientCard key={client.id} client={client}/>
+                    ))}
                 </div>
+
                 <div className="flex justify-center items-center mt-5 w-full">
                     <button
                         className="text-white border-2 rounded-full border-white py-3 bg-black hover:bg-opacity-50 hover:text-black w-2/6">

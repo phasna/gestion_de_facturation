@@ -7,3 +7,4 @@ urlpatterns = [
     path('', Accueil, name='Accueil'),  # Page d'accueil
     path('factures/', include('factures.urls')),  # Inclure les routes de l'application "factures"
 ]
+

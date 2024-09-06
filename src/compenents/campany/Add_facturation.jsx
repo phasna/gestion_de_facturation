@@ -1,13 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const AddFacturation = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [prestations, setPrestations] = useState([{ service: '', price: '' }]);
-    const [clients] = useState(['clistina cruz', 'jean christophe', 'minna jenna']); // Liste des clients
-    const [prestationsService] = useState(['Crée un site', 'Développer un application', 'Reprendre anciaent site']); // Liste des prestationsService
+    const [clients, setClients] = useState([]);  // Stocker les clients récupérés
+    const [prestationsService, setPrestationsService] = useState([]);  // Stocker les prestations récupérées
     const [selectedClient, setSelectedClient] = useState('');
-    const [selectedAppareil, setSelectedAppareil] = useState('');
+    const [selectedPrestation, setSelectedPrestation] = useState('');
+
+    // Récupérer la liste des clients depuis l'API
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/factures/clients/')
+            .then(response => response.json())
+            .then(data => setClients(data))
+            .catch(error => console.error('Erreur lors de la récupération des clients:', error));
+    }, []);
+
+    // Récupérer la liste des prestations depuis l'API
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/factures/prestations/')
+            .then(response => response.json())
+            .then(data => setPrestationsService(data))
+            .catch(error => console.error('Erreur lors de la récupération des prestations:', error));
+    }, []);
 
     // Fonction pour ajouter une nouvelle prestation
     const addPrestation = () => {
@@ -33,6 +49,7 @@ const AddFacturation = () => {
             <h2 className="text-2xl font-semibold mb-6">Crée une Facture</h2>
 
             <form className="space-y-6">
+                {/* Sélection du client */}
                 <div>
                     <label htmlFor="client" className="block text-sm font-medium text-gray-700">Client</label>
                     <select
@@ -42,64 +59,65 @@ const AddFacturation = () => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
                         <option value="">Sélectionner un client</option>
-                        {clients.map((client, index) => (
-                            <option key={index} value={client}>{client}</option>
+                        {clients.map((client) => (
+                            <option key={client.id} value={client.id}>
+                                {client.nom} {client.prenom} {/* Affiche le nom et le prénom */}
+                            </option>
                         ))}
                     </select>
                 </div>
 
+                {/* Sélection de la prestation */}
                 <div>
-                    <label htmlFor="appareil" className="block text-sm font-medium text-gray-700">Type de Prestions</label>
+                    <label htmlFor="prestation" className="block text-sm font-medium text-gray-700">Type de Prestations</label>
                     <select
-                        id="appareil"
-                        value={selectedAppareil}
-                        onChange={(e) => setSelectedAppareil(e.target.value)}
+                        id="prestation"
+                        value={selectedPrestation}
+                        onChange={(e) => setSelectedPrestation(e.target.value)}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
-                        <option value="">Sélectionner un appareil</option>
-                        {prestationsService.map((prestationsService, index) => (
-                            <option key={index} value={prestationsService}>{prestationsService}</option>
+                        <option value="">Sélectionner une prestation</option>
+                        {prestationsService.map((prestation) => (
+                            <option key={prestation.id} value={prestation.id}>
+                                {prestation.nom} {/* Affiche le nom de la prestation */}
+                            </option>
                         ))}
                     </select>
                 </div>
 
-                <div>
-                    {/* Prestations */}
-                    {prestations.map((prestation, index) => (
-                        <div key={index} className="space-y-4 mt-4">
-                            <div>
-                                <label htmlFor={`service-${index}`}
-                                       className="block text-sm font-medium text-gray-700">Prestation</label>
-                                <input
-                                    type="text"
-                                    id={`service-${index}`}
-                                    name="service"
-                                    value={prestation.service}
-                                    onChange={(e) => handlePrestationChange(index, e)}
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    placeholder="Prestation fournie"
-                                />
-                            </div>
-
-                            <div>
-                                <label htmlFor={`price-${index}`}
-                                       className="block text-sm font-medium text-gray-700">Prix</label>
-                                <input
-                                    type="number"
-                                    id={`price-${index}`}
-                                    name="price"
-                                    value={prestation.price}
-                                    onChange={(e) => handlePrestationChange(index, e)}
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    placeholder="Prix de la prestation"
-                                />
-                            </div>
+                {/* Prestations */}
+                {prestations.map((prestation, index) => (
+                    <div key={index} className="space-y-4 mt-4">
+                        <div>
+                            <label htmlFor={`service-${index}`} className="block text-sm font-medium text-gray-700">Prestation</label>
+                            <input
+                                type="text"
+                                id={`service-${index}`}
+                                name="service"
+                                value={prestation.service}
+                                onChange={(e) => handlePrestationChange(index, e)}
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="Prestation fournie"
+                            />
                         </div>
-                    ))}
-                </div>
+
+                        <div>
+                            <label htmlFor={`price-${index}`} className="block text-sm font-medium text-gray-700">Prix</label>
+                            <input
+                                type="number"
+                                id={`price-${index}`}
+                                name="price"
+                                value={prestation.price}
+                                onChange={(e) => handlePrestationChange(index, e)}
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="Prix de la prestation"
+                            />
+                        </div>
+                    </div>
+                ))}
 
                 {/* Bouton pour ajouter plus de prestations */}
-                <div className={"flex flex-col"}>
+                <div className="flex flex-col">
                     <button
                         type="button"
                         onClick={addPrestation}

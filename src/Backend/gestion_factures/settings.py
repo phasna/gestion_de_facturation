@@ -30,8 +30,6 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-
-
 CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
@@ -40,6 +38,7 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOWED_ORIGIN_REGEXES = [
     'http://localhost:5173',
 ]
+
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
@@ -61,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'gestion_factures.urls'
 

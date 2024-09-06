@@ -1,6 +1,11 @@
 from django.urls import path
-from .views import list_clients, Accueil
+from . import views
 
 urlpatterns = [
-    path('clients/', list_clients, name='list_clients'),  # Route pour la liste des clients
+    path('clients/', views.list_clients, name='list_clients'),
+    path('prestations/', views.list_prestations, name='list_prestations'),
 ]
+
+
+
+

@@ -1,6 +1,6 @@
 import { CgProfile } from "react-icons/cg";
 import logo from "../../../src/assets/img/logo.png";
-import user from "../../../src/assets/img/user.png";
+import user from "../../../src/assets/img/User.png";
 
 const Header = () => {
     return (

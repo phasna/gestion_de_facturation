@@ -1,5 +1,5 @@
 from django.http import JsonResponse, HttpResponse
-from .models import User
+from .models import PrestationType, User
 
 
 def list_clients(request):
@@ -20,4 +20,14 @@ def list_clients(request):
 
 
 def Accueil(request):
+    # Page d'accueil simple
     return HttpResponse("<h1>Bienvenue sur la page d'accueil</h1>")
+
+
+def list_prestations(request):
+    # Récupérer toutes les prestations depuis la table PrestationType
+    prestations = PrestationType.objects.all()
+
+    # Formater les données pour la réponse JSON
+    prestations_data = [{'id': prestation.id, 'nom': prestation.nom} for prestation in prestations]
+    return JsonResponse(prestations_data, safe=False)
