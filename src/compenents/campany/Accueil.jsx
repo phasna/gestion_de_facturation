@@ -119,7 +119,7 @@ function Dashboard() {
     const [activeMenu, setActiveMenu] = useState('Home');
 
     return (
-        <div className="flex min-h-screen text-xl p-4">
+        <div className="flex  min-h-screen text-xl p-4">
             <div className="flex-1">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
                     <div className="bg-gray-100 p-4 rounded shadow col-span-2">

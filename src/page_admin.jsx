@@ -3,15 +3,6 @@ import { BrowserRouter as Router, Routes, Route, NavLink, Link } from 'react-rou
 
 
 
-/* Page Facturation en PDF */
-import Facturation from "./compenents/Facturation/Facturation.jsx";
-
-/* Page pour ajouter un utilisateur */
-import Add_user from "./compenents/Utilisateur/Add_user.jsx";
-
-/* Page pour les devis */
-import Devie from "./compenents/campany/Devis.jsx";
-
 /* Les icons du Menu */
 import { AiOutlineProfile } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
@@ -34,7 +25,7 @@ const Menu = () => {
     return (
         <div className="w-1/4 p-4 bg-gray-200 lg:block hidden">
             <ul className="space-y-4">
-                <Link to="/Devie" className="w-full">
+                <Link to="/devie" className="w-full">
                     <button
                         className="border-2 rounded-xl py-3 px-10 border-black w-full hover:bg-black hover:text-white flex flex-row items-center justify-center space-x-4">
                         <span className="text-lg">Ajouter un devis</span>
@@ -58,7 +49,7 @@ const Menu = () => {
 
                 <li>
                     <NavLink
-                        to="/Liste_clients"
+                        to="/liste_clients"
                         className={({isActive}) =>
                             isActive
                                 ? 'flex items-center p-4 rounded bg-black text-white transition-all duration-300 ease-in-out'
@@ -88,7 +79,7 @@ const Menu = () => {
                         <ul className="pl-8 space-y-2">
                             <li>
                                 <NavLink
-                                    to="/Add_client"
+                                    to="/add_client"
                                     className={({isActive}) =>
                                         isActive
                                             ? 'flex items-center p-2 rounded bg-black text-white transition-all duration-300 ease-in-out'
@@ -100,7 +91,7 @@ const Menu = () => {
                             </li>
                             <li>
                                 <NavLink
-                                    to="/UpdateUser"
+                                    to="/updateUser"
                                     className={({isActive}) =>
                                         isActive
                                             ? 'flex items-center p-2 rounded bg-black text-white transition-all duration-300 ease-in-out'
@@ -116,7 +107,7 @@ const Menu = () => {
 
                 <li>
                     <NavLink
-                        to="/Add_facturation"
+                        to="/add_facturation"
                         className={({isActive}) =>
                             isActive
                                 ? 'flex items-center p-4 rounded bg-black hover:bg-opacity-25 text-white transition-all duration-300 ease-in-out'
@@ -129,7 +120,7 @@ const Menu = () => {
 
                 <li>
                     <NavLink
-                        to="/Devie"
+                        to="/devis"
                         className={({isActive}) =>
                             isActive
                                 ? 'flex items-center p-4 rounded bg-black hover:bg-opacity-25 text-white transition-all duration-300 ease-in-out'
@@ -142,7 +133,7 @@ const Menu = () => {
 
                 <li>
                     <NavLink
-                        to="/Add_user"
+                        to="/add_user"
                         className={({isActive}) =>
                             isActive
                                 ? 'flex items-center p-4 rounded bg-black hover:bg-opacity-25 text-white transition-all duration-300 ease-in-out'
@@ -155,7 +146,7 @@ const Menu = () => {
 
                 <li>
                     <NavLink
-                        to="/Profile"
+                        to="/profile"
                         className={({isActive}) =>
                             isActive
                                 ? 'flex items-center p-4 rounded bg-black text-white transition-all duration-300 ease-in-out'
@@ -172,4 +163,4 @@ const Menu = () => {
 
 
 
-export default App;
+export default Menu;
