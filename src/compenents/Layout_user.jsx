@@ -1,14 +1,14 @@
 import Nav from "./campany/Nav.jsx";
 import {Outlet} from "react-router-dom";
-import Admin from "../page_admin.jsx";
+import User from "../page_user.jsx";
 
-function Layout() {
+function LayoutUser() {
     return (
         <>
             <Nav/>
             <div className="flex">
 
-                <Admin/>
+                <User/>
                 <div className="w-full">
                     <Outlet/>
                 </div>
@@ -18,4 +18,4 @@ function Layout() {
     );
 }
 
-export default Layout;
+export default LayoutUser;

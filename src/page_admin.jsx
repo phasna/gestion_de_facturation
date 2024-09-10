@@ -25,7 +25,7 @@ const Menu = () => {
     return (
         <div className="w-1/4 p-4 bg-gray-200 lg:block hidden">
             <ul className="space-y-4">
-                <Link to="/devie" className="w-full">
+                <Link to="/devis" className="w-full">
                     <button
                         className="border-2 rounded-xl py-3 px-10 border-black w-full hover:bg-black hover:text-white flex flex-row items-center justify-center space-x-4">
                         <span className="text-lg">Ajouter un devis</span>
@@ -35,7 +35,7 @@ const Menu = () => {
 
                 <li>
                     <NavLink
-                        to="/"
+                        to="/Accueil"
                         end
                         className={({isActive}) =>
                             isActive

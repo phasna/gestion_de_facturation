@@ -10,7 +10,7 @@ const Header = () => {
 
     return (
         <header className="relative flex justify-between items-center bg-black px-12 ">
-            <Link to="/Accueil" className="lg:w-1/5 sm:w-1/2 md:w-1/4 hover:text-blue-700">
+            <Link to="/Accueil_user" className="lg:w-1/5 sm:w-1/2 md:w-1/4 hover:text-blue-700">
 
             {/* Logo à gauche */}
             <div className="flex items-center">
