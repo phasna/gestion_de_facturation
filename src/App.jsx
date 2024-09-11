@@ -13,6 +13,14 @@ import Identifian from "./compenents/Connection/Identifian.jsx"
 
 import Mdpoublier from "./compenents/Connection/mdpoublier.jsx";
 
+// imports partie client
+
+import AcceuilClient from "./compenents/client/AcceuilClient.jsx";
+import Add_project from "./compenents/client/Add_project.jsx";
+import ListeProjet from './compenents/client/listeProjet.jsx';
+
+
+
 const Menu = () => (
     <div className="w-1/4 p-4 bg-gray-200">
         <ul className="space-y-4">
@@ -79,6 +87,11 @@ const App = () => {
                 <Menu />
                 <div className="w-3/4 p-4">
                     <Routes>
+                        <Route path="/AcceuilClient" element={<AcceuilClient />} />
+                        <Route path="/Add_project" element={<Add_project />} />
+                        <Route path='/ListeProjet' element={<ListeProjet/>} />
+
+
                         <Route path="/Identifian" element={<Identifian />} />
                         <Route path="/Mdpoublier" element={<Mdpoublier />} />
                         <Route path="/" element={<Accueil />} />
