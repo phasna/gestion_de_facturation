@@ -146,7 +146,7 @@ function Dashboard() {
                 </div>
 
                 <div className="flex justify-center items-center mt-5">
-                    <Link to="/Liste_clients" className="lg:w-1/5 sm:w-1/2 md:w-1/4">
+                    <Link to="/src/compenents/campany/Liste_clients" className="lg:w-1/5 sm:w-1/2 md:w-1/4">
                         <button
                             className="border-2 rounded-xl py-3 px-3 w-full border-black bg-black hover:bg-opacity-70 text-white flex items-center justify-center space-x-2">
                             <span className="text-lg">Afficher plus</span>

@@ -49,7 +49,7 @@ const Header = () => {
                         <a href="/" className="block p-4 text-lg text-black hover:bg-gray-300">Accueil</a>
                     </li>
                     <li>
-                        <a href="/Liste_clients" className="block p-4 text-lg text-black hover:bg-gray-300">Liste des clients</a>
+                        <a href="/src/compenents/campany/Liste_clients" className="block p-4 text-lg text-black hover:bg-gray-300">Liste des clients</a>
                     </li>
                     <li>
                         <a href="/Add_client" className="block p-4 text-lg text-black hover:bg-gray-300">Ajouter des clients</a>
