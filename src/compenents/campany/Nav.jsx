@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaBars, FaTimes } from 'react-icons/fa';
 import logo from '../../../src/assets/img/logo.png';
-import user from '../../../src/assets/img/user.png';
+import user from '../../../src/assets/img/User.png';
 import { Link } from 'react-router-dom';
 
 

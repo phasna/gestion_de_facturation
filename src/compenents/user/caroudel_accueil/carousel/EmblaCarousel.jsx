@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+
 import useEmblaCarousel from 'embla-carousel-react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { MdWorkOutline } from "react-icons/md";
