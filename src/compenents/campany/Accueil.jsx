@@ -123,7 +123,7 @@ function Dashboard() {
             <div className="flex-1">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
                     <div className="bg-gray-100 p-4 rounded shadow col-span-2">
-                        <h2 className="text-xl font-bold mb-2">Statistiques</h2>
+                        <h2 className="text-xl font-bold mb-2">Statistiques des revenues</h2>
                         <div className="w-full">
                             <Line data={lineData} options={lineOptions} />
                         </div>
