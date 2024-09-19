@@ -333,159 +333,20 @@ const clientData = [
                 entreprise: "dpdev",
                 entreprise_phone: "0654324561",
             },
-        ],
-    },
 
-    {
-        date: "31 Mai 2024",
-        clients: [
-            {
-                id: 4,
-                name: "Jean Christophe",
-                address: "101 Rue Exemple",
-                phone: "1122334455",
-                img: user_01,
-                email: "jean@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-
-            {
-                id: 5,
-                name: "Jennie Fana",
-                address: "202 Rue Exemple",
-                phone: "5566778899",
-                img: user_02,
-                email: "jennie@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-
-            {
-                id: 6,
-                name: "Pierre Brown",
-                address: "303 Rue Exemple",
-                phone: "6677889900",
-                img: user_03,
-                email: "pierre@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-        ],
-    },
-    {
-        date: "15 Septembre 2024",
-        clients: [
-            {
-                id: 7,
-                name: "Emily Davis",
-                address: "404 Rue Exemple",
-                phone: "7788990011",
-                img: user_01,
-                email: "emily@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-
-            {
-                id: 8,
-                name: "Michael Wilson",
-                address: "505 Rue Exemple",
-                phone: "8899001122",
-                img: user_02,
-                email: "michael@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-
-            {
-                id: 9,
-                name: "Sarah Brown",
-                address: "606 Rue Exemple",
-                phone: "9900112233",
-                img: user_03,
-                email: "sarah@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-        ],
-    },
-
-    {
-        date: "01 Octobre 2024",
-        clients: [
-            {
-                id: 10,
-                name: "Daniel Lee",
-                address: "707 Rue Exemple",
-                phone: "1011121314",
-                img: user_02,
-                email: "daniel@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-
-            {
-                id: 11,
-                name: "Olivia Smith",
-                address: "808 Rue Exemple",
-                phone: "2122232425",
-                img: user_01,
-                email: "olivia@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-
-            {
-                id: 12,
-                name: "David Garcia",
-                address: "909 Rue Exemple",
-                phone: "3233343536",
-                img: user_03,
-                email: "david@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
         ],
     },
 ];
 
 // Composant principal pour afficher les listes de clients
 const ListeClients = () => (
-    <div className="min-h-screen bg-white p-4">
+    <div className="min-h-full bg-white p-4">
         <h1 className="text-2xl mb-4 my-10 text-center font-semibold">
             Liste des Clients
         </h1>
         <div className="w-full flex flex-col items-center">
             {clientData.map(({ date, clients }) => (
-                <div key={date} className="w-full max-w-screen-lg px-4 mb-6">
+                <div key={date} className="w-full max-w-screen px-4 mb-6">
                     <motion.h3
                         className="text-xl my-5 border-b pb-2 border-gray-300"
                         initial={{ opacity: 0, scale: 0.8 }}
