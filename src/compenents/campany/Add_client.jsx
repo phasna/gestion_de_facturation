@@ -13,7 +13,7 @@ const FacturationForm = () => {
             animate={{opacity: 1, scale: 1}}
             transition={{duration: 0.5}}
             className="max-w-full h-screen mx-auto p-6 ">
-            <h2 className="text-2xl font-semibold mb-6">Crée nouveau client</h2>
+            <h2 className="text-2xl font-semibold mb-6 text-center">Crée nouveau client</h2>
 
             <form className="space-y-6">
                 {/* Coordonnées */}
