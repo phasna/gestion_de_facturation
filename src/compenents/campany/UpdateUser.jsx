@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // Exemple de liste de clients (remplacez-le par vos données réelles)
 const clientsList = [
-    { id: 1, firstName: 'Jean', lastName: 'Dupont', email: 'jean.dupont@example.com', phone: '0123456789', address: '123 Rue de Paris', city: 'Paris', postalCode: '75001', country: 'France' },
-    { id: 2, firstName: 'Marie', lastName: 'Curie', email: 'marie.curie@example.com', phone: '0987654321', address: '456 Avenue des Champs-Élysées', city: 'Paris', postalCode: '75008', country: 'France' },
-    { id: 3, firstName: 'Albert', lastName: 'Einstein', email: 'albert.einstein@example.com', phone: '1122334455', address: '789 Boulevard Saint-Germain', city: 'Paris', postalCode: '75005', country: 'France' },
+    { id: 1, firstName: 'Jean', lastName: 'Dupont', email: 'jean.dupont@example.com', phone: '0123456789', address: '123 Rue de Paris', city: 'Paris', postalCode: '75001', country: 'France', siretNumber: '265438031', },
+    { id: 2, firstName: 'Marie', lastName: 'Curie', email: 'marie.curie@example.com', phone: '0987654321', address: '456 Avenue des Champs-Élysées', city: 'Paris', postalCode: '75008', country: 'France', siretNumber: '265438031', },
+    { id: 3, firstName: 'Albert', lastName: 'Einstein', email: 'albert.einstein@example.com', phone: '1122334455', address: '789 Boulevard Saint-Germain', city: 'Paris', postalCode: '75005', country: 'France', siretNumber: '265438031', },
 ];
 
 const EditClientForm = ({ client = {}, onSave, onCancel }) => {
@@ -16,7 +16,7 @@ const EditClientForm = ({ client = {}, onSave, onCancel }) => {
         address: client.address || '',
         city: client.city || '',
         postalCode: client.postalCode || '',
-        country: client.country || ''
+        siretNumber: client.siretNumber || '',
     });
 
     const [selectedClientId, setSelectedClientId] = useState(client.id || '');
@@ -33,7 +33,8 @@ const EditClientForm = ({ client = {}, onSave, onCancel }) => {
                     address: selectedClient.address || '',
                     city: selectedClient.city || '',
                     postalCode: selectedClient.postalCode || '',
-                    country: selectedClient.country || ''
+                    country: selectedClient.country || '',
+                    siretNumber: selectedClient.siretNumber || '',
                 });
             }
         }
@@ -61,7 +62,8 @@ const EditClientForm = ({ client = {}, onSave, onCancel }) => {
             <h2 className="text-2xl font-bold mb-6 text-center">Modifier un client</h2>
 
             <div className="mb-4">
-                <label htmlFor="clientSelect" className="block text-sm font-medium text-gray-700">Sélectionner un client</label>
+                <label htmlFor="clientSelect" className="block text-sm font-medium text-gray-700">Sélectionner un
+                    client</label>
                 <select
                     id="clientSelect"
                     name="clientSelect"
@@ -101,6 +103,19 @@ const EditClientForm = ({ client = {}, onSave, onCancel }) => {
                     className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
             </div>
+
+            <div className="mb-4">
+                <label htmlFor="Siret" className="block text-sm font-medium text-gray-700">Numéro Siret</label>
+                <input
+                    type="tel"
+                    id="siret"
+                    name="siret"
+                    value={formData.siretNumber}
+                    onChange={handleChange}
+                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+            </div>
+
 
             <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>

@@ -44,6 +44,17 @@ const FacturationForm = () => {
                 </div>
 
                 <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Numéro Siret</label>
+                    <input
+                        type="num"
+                        id="Siret"
+                        name="Siret"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        placeholder="Numéro siret du client"
+                    />
+                </div>
+
+                <div>
                     <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                     <input
                         type="email"
@@ -68,29 +79,29 @@ const FacturationForm = () => {
 
                 {/* Adresse de facturation */}
                 <div className={"flex flex-row space-x-3"}>
-                <div className={"w-full"}>
-                    <label htmlFor="address" className="block text-sm font-medium text-gray-700">Adresse</label>
-                    <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Adresse du client"
-                        required
-                    />
-                </div>
+                    <div className={"w-full"}>
+                        <label htmlFor="address" className="block text-sm font-medium text-gray-700">Adresse</label>
+                        <input
+                            type="text"
+                            id="address"
+                            name="address"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Adresse du client"
+                            required
+                        />
+                    </div>
 
-                <div className={"w-full"}>
-                    <label htmlFor="city" className="block text-sm font-medium text-gray-700">Ville</label>
-                    <input
-                        type="text"
-                        id="city"
-                        name="city"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Ville du client"
-                        required
-                    />
-                </div>
+                    <div className={"w-full"}>
+                        <label htmlFor="city" className="block text-sm font-medium text-gray-700">Ville</label>
+                        <input
+                            type="text"
+                            id="city"
+                            name="city"
+                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Ville du client"
+                            required
+                        />
+                    </div>
                 </div>
                 <div>
                     <label htmlFor="zip" className="block text-sm font-medium text-gray-700">Code Postal</label>
@@ -107,14 +118,12 @@ const FacturationForm = () => {
                 <div>
 
 
-
-
-                <button
-                    type="submit"
-                    className="w-1/5 mt-6 px-4 py-2 bg-black text-white font-semibold rounded-md shadow-sm hover:bg-opacity-65 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Envoyer
-                </button>
+                    <button
+                        type="submit"
+                        className="w-1/5 mt-6 px-4 py-2 bg-black text-white font-semibold rounded-md shadow-sm hover:bg-opacity-65 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Envoyer
+                    </button>
                 </div>
             </form>
         </motion.div>
