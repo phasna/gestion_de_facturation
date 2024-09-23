@@ -37,7 +37,7 @@ const Header = () => {
 
 
             {/* Menu burger */}
-            <div className={`fixed top-0 right-0 w-full h-full bg-black  md:hidden transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out`}>
+            <div className={`fixed top-0 right-0 w-full  bg-black  md:hidden transform h-screen z-50 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out`}>
                 <button
                     className="p-4 text-3xl absolute right-0 top-0 text-white"
                     onClick={() => setIsMenuOpen(false)}

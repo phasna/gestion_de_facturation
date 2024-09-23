@@ -43,31 +43,43 @@ const FacturationForm = () => {
                     </div>
                 </div>
 
-                <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <div className={"w-full"}>
+                    <label htmlFor="Siret_du_client" className="block text-sm font-medium text-gray-700">Siret du client</label>
                     <input
-                        type="email"
-                        id="email"
-                        name="email"
+                        type="Siret "
+                        id="Siret "
+                        name="Siret du client"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Email du client"
+                        placeholder="Siret du client "
                         required
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Téléphone</label>
-                    <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Téléphone du client"
-                    />
-                </div>
+            <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Email du client"
+                    required
+                />
+            </div>
 
-                {/* Adresse de facturation */}
-                <div className={"flex flex-row space-x-3"}>
+            <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Téléphone</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Téléphone du client"
+                />
+            </div>
+
+            {/* Adresse de facturation */}
+            <div className={"flex flex-row space-x-3"}>
                 <div className={"w-full"}>
                     <label htmlFor="address" className="block text-sm font-medium text-gray-700">Adresse</label>
                     <input
@@ -91,22 +103,20 @@ const FacturationForm = () => {
                         required
                     />
                 </div>
-                </div>
-                <div>
-                    <label htmlFor="zip" className="block text-sm font-medium text-gray-700">Code Postal</label>
-                    <input
-                        type="text"
-                        id="zip"
-                        name="zip"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Code postal du client"
-                        required
-                    />
-                </div>
+            </div>
+            <div>
+                <label htmlFor="zip" className="block text-sm font-medium text-gray-700">Code Postal</label>
+                <input
+                    type="text"
+                    id="zip"
+                    name="zip"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Code postal du client"
+                    required
+                />
+            </div>
 
-                <div>
-
-
+            <div>
 
 
                 <button
@@ -115,10 +125,11 @@ const FacturationForm = () => {
                 >
                     Envoyer
                 </button>
-                </div>
-            </form>
-        </motion.div>
-    );
+            </div>
+        </form>
+</motion.div>
+)
+    ;
 };
 
 export default FacturationForm;
