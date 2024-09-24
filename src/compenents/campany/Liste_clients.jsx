@@ -1,3 +1,4 @@
+// ClientList.jsx
 import { useState } from "react";
 import { FaDownload, FaEye, FaEllipsisV, FaTrash, FaEdit, FaEnvelope } from "react-icons/fa";
 import { IoSearchOutline } from "react-icons/io5";
@@ -5,13 +6,11 @@ import { motion } from "framer-motion";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import logo from "../../../src/assets/img/logo_1.png";
-import user_01 from "../../assets/img/user_1.png";
-import user_02 from "../../assets/img/user_2.png";
-import user_03 from "../../assets/img/user_3.png";
-
+import { clients } from "../ClientData/ClientsData.jsx"; // Import des données des clients
+import { Link } from "react-router-dom";
 const iconStyles = "text-gray-600 cursor-pointer hover:text-blue-500";
-const actionStyles = "absolute right-0 top-full mt-2 hidden group-hover:flex flex-col bg-white shadow-lg p-2 rounded";
 
+// Fonction pour générer un PDF
 const generatePDF = (client) => {
     const doc = new jsPDF();
     doc.setFontSize(13);
@@ -60,7 +59,7 @@ const generatePDF = (client) => {
     return doc;
 };
 
-const ClientCard = ({ client }) => {
+const ClientCard = ({ client, onDelete }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [showActions, setShowActions] = useState(false);
 
@@ -75,11 +74,23 @@ const ClientCard = ({ client }) => {
         pdfDoc.save(`facturation_${client.id}.pdf`);
     };
 
+    const handleToggleActions = (e) => {
+        e.stopPropagation();
+        setShowActions(!showActions);
+    };
+
+    const handleToggleOpen = () => {
+        setIsOpen(!isOpen);
+        if (isOpen) {
+            setShowActions(false);
+        }
+    };
+
     return (
         <div className="mb-4">
             <motion.div
                 className="bg-gray-200 px-5 py-2 rounded shadow cursor-pointer w-full"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={handleToggleOpen}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
@@ -110,19 +121,27 @@ const ClientCard = ({ client }) => {
                             <FaEllipsisV
                                 className={iconStyles}
                                 title="Options"
-                                onClick={() => setShowActions(!showActions)}
+                                onClick={handleToggleActions}
                             />
                             {showActions && (
-                                <div className={actionStyles}>
-                                    <div className="flex items-center justify-between">
+                                <div className="absolute right-0 top-full mt-2 flex flex-col bg-white shadow-lg p-2 rounded z-10">
+                                    <div
+                                        className="flex items-center justify-between cursor-pointer hover:text-red-500"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onDelete(client.id);
+                                        }}
+                                    >
                                         <FaTrash className={`${iconStyles} text-red-500`} title="Supprimer" />
                                         <span className="ml-2">Supprimer</span>
                                     </div>
-                                    <div className="flex items-center justify-between">
+                                    <Link to="/updateUser">
+                                    <div className="flex items-center justify-between mt-2 hover:text-blue-500">
                                         <FaEdit className={`${iconStyles} text-blue-500`} title="Modifier" />
                                         <span className="ml-2">Modifier</span>
                                     </div>
-                                    <div className="flex items-center justify-between">
+                                        </Link>
+                                    <div className="flex items-center justify-between mt-2 hover:text-green-500">
                                         <FaEnvelope className={`${iconStyles} text-green-500`} title="Envoyer" />
                                         <span className="ml-2">Envoyer</span>
                                     </div>
@@ -145,21 +164,12 @@ const ClientList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [visibleClients, setVisibleClients] = useState(5);
 
-    const clientData = [
-        {
-            date: "22 Août 2024",
-            clients: [
-                { id: 1, name: "Alice Smith", address: "123 Rue Exemple", phone: "0123456789", img: user_01, email: "alice@example.com", detail: "Demande de devis.", entreprise: "dpdev", entreprise_address: "1 allée des chemin", entreprise_phone: "0654324561" },
-                { id: 2, name: "Aun Phasna", address: "456 Rue Exemple", phone: "0987654321", img: user_02, email: "bob@example.com", detail: "Demande de devis.", entreprise: "dpdev", entreprise_address: "1 allée des chemin", entreprise_phone: "0654324561" },
-                { id: 3, name: "Saleh", address: "456 Rue Exemple", phone: "0987654321", img: user_03, email: "bob@example.com", detail: "Demande de devis.", entreprise: "dpdev", entreprise_address: "1 allée des chemin", entreprise_phone: "0654324561" },
-                { id: 4, name: "Ziad", address: "456 Rue Exemple", phone: "0987654321", img: user_01, email: "bob@example.com", detail: "Demande de devis.", entreprise: "dpdev", entreprise_address: "1 allée des chemin", entreprise_phone: "0654324561" },
-                { id: 5, name: "Christine Jean", address: "456 Rue Exemple", phone: "0987654321", img: user_02, email: "bob@example.com", detail: "Demande de devis.", entreprise: "dpdev", entreprise_address: "1 allée des chemin", entreprise_phone: "0654324561" },
-                { id: 6, name: "Davith Cruz", address: "456 Rue Exemple", phone: "0987654321", img: user_03, email: "bob@example.com", detail: "Demande de devis.", entreprise: "dpdev", entreprise_address: "1 allée des chemin", entreprise_phone: "0654324561" },
-                { id: 7, name: "Ophélie Cruz", address: "456 Rue Exemple", phone: "0987654321", img: user_02, email: "bob@example.com", detail: "Demande de devis.", entreprise: "dpdev", entreprise_address: "1 allée des chemin", entreprise_phone: "0654324561" },
-                { id: 8, name: "Remon Cruz", address: "101 Rue Exemple", phone: "1122334455", img: user_01, email: "jean@example.com", detail: "Demande de devis.", entreprise: "dpdev", entreprise_address: "1 allée des chemin", entreprise_phone: "0654324561" },
-            ],
-        },
-    ];
+    const [clientData, setClientData] = useState(clients); // Utilisez les données importées
+
+    const handleDeleteClient = (clientId) => {
+        const updatedClients = clientData.filter((client) => client.id !== clientId);
+        setClientData(updatedClients);
+    };
 
     const handleSeeMore = () => {
         setVisibleClients(visibleClients + 5);
@@ -167,29 +177,28 @@ const ClientList = () => {
 
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Liste des Clients</h1>
-            <div className="mb-4 flex items-center absolute right-5">
+            <h1 className="text-5xl font-semibold mb-4 text-center">Liste des Clients</h1>
+            <div className="mb-8 flex justify-end items-center space-x-2 mr-5">
                 <input
                     type="text"
-                    placeholder="Rechercher..."
-                    className="border rounded px-3 py-2 mr-2"
+                    placeholder="Rechercher des clients..."
+                    className="border border-gray-300 rounded px-3 py-2 placeholder-gray-500 text-gray-900"
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <IoSearchOutline className="text-gray-500" />
             </div>
-            {clientData.flatMap(data =>
-                data.clients
-                    .filter(client => client.name.toLowerCase().includes(searchTerm.toLowerCase()))
-                    .slice(0, visibleClients)
-                    .map(client => <ClientCard key={client.id} client={client} />)
-            )}
-            {visibleClients < clientData[0].clients.length && (
+
+            {clientData
+                .filter(client => client.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                .slice(0, visibleClients)
+                .map(client => (
+                    <ClientCard key={client.id} client={client} onDelete={handleDeleteClient} />
+                ))}
+
+            {visibleClients < clientData.length && (
                 <div className="flex justify-center mt-4">
-                    <button
-                        onClick={handleSeeMore}
-                        className="px-20 py-3 bg-black text-white rounded-2xl hover:bg-opacity-80"
-                    >
-                        Voir plus
+                    <button onClick={handleSeeMore} className="text-white bg-black hover:bg-opacity-80 py-3 px-7 w-1/5 rounded-xl">
+                        Voir plus clients
                     </button>
                 </div>
             )}

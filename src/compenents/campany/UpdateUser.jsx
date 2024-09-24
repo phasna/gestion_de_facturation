@@ -1,196 +1,134 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom'; // Ajoutez useNavigate
+import { clients as initialClients } from '../ClientData/ClientsData.jsx';
 
-// Exemple de liste de clients (remplacez-le par vos données réelles)
-const clientsList = [
-    { id: 1, firstName: 'Jean', lastName: 'Dupont', email: 'jean.dupont@example.com', phone: '0123456789', address: '123 Rue de Paris', city: 'Paris', postalCode: '75001', country: 'France' },
-    { id: 2, firstName: 'Marie', lastName: 'Curie', email: 'marie.curie@example.com', phone: '0987654321', address: '456 Avenue des Champs-Élysées', city: 'Paris', postalCode: '75008', country: 'France' },
-    { id: 3, firstName: 'Albert', lastName: 'Einstein', email: 'albert.einstein@example.com', phone: '1122334455', address: '789 Boulevard Saint-Germain', city: 'Paris', postalCode: '75005', country: 'France' },
-];
-
-const EditClientForm = ({ client = {}, onSave, onCancel }) => {
-    const [formData, setFormData] = useState({
-        firstName: client.firstName || '',
-        lastName: client.lastName || '',
-        email: client.email || '',
-        phone: client.phone || '',
-        address: client.address || '',
-        city: client.city || '',
-        postalCode: client.postalCode || '',
-        country: client.country || ''
-    });
-
-    const [selectedClientId, setSelectedClientId] = useState(client.id || '');
+// Formulaire pour afficher et modifier les informations d'un client
+const ClientForm = ({ client }) => {
+    const [name, setName] = useState('');
+    const [address, setAddress] = useState('');
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+    const [detail, setDetail] = useState('');
+    const [entreprise, setEntreprise] = useState('');
+    const [entrepriseAddress, setEntrepriseAddress] = useState('');
+    const [entreprisePhone, setEntreprisePhone] = useState('');
+    const [siret, setSiret] = useState('');
+    const [city, setCity] = useState('');
 
     useEffect(() => {
-        if (selectedClientId) {
-            const selectedClient = clientsList.find(c => c.id === parseInt(selectedClientId));
-            if (selectedClient) {
-                setFormData({
-                    firstName: selectedClient.firstName || '',
-                    lastName: selectedClient.lastName || '',
-                    email: selectedClient.email || '',
-                    phone: selectedClient.phone || '',
-                    address: selectedClient.address || '',
-                    city: selectedClient.city || '',
-                    postalCode: selectedClient.postalCode || '',
-                    country: selectedClient.country || ''
-                });
-            }
+        if (client) {
+            setName(client.name);
+            setAddress(client.address);
+            setPhone(client.phone);
+            setEmail(client.email);
+            setDetail(client.detail);
+            setEntreprise(client.entreprise);
+            setEntrepriseAddress(client.entreprise_address);
+            setEntreprisePhone(client.entreprise_phone);
+            setSiret(client.siret);
+            setCity(client.city);
+        } else {
+            setName('');
+            setAddress('');
+            setPhone('');
+            setEmail('');
+            setDetail('');
+            setEntreprise('');
+            setEntrepriseAddress('');
+            setEntreprisePhone('');
+            setSiret('');
+            setCity('');
         }
-    }, [selectedClientId]);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
-
-    const handleClientChange = (e) => {
-        setSelectedClientId(e.target.value);
-    };
+    }, [client]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSave(formData); // Appelle la fonction parent avec les données mises à jour
+        alert(`Client mis à jour: ${name}, ${phone}, ${email}, ${detail}, ${entreprise}, ${entrepriseAddress}, ${entreprisePhone}, ${siret}, ${city}`);
+        // Ici, vous pouvez ajouter la logique pour sauvegarder les données mises à jour.
     };
 
     return (
-        <form onSubmit={handleSubmit} className="max-w-full h-screen mx-auto p-5">
-            <h2 className="text-2xl font-bold mb-6 text-center">Modifier un client</h2>
-
-            <div className="mb-4">
-                <label htmlFor="clientSelect" className="block text-sm font-medium text-gray-700">Sélectionner un client</label>
-                <select
-                    id="clientSelect"
-                    name="clientSelect"
-                    value={selectedClientId}
-                    onChange={handleClientChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                    <option value="">Choisir un client</option>
-                    {clientsList.map(c => (
-                        <option key={c.id} value={c.id}>
-                            {c.firstName} {c.lastName}
-                        </option>
-                    ))}
-                </select>
+        <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded bg-white">
+            <h2 className="text-xl font-bold mb-2">Informations du Client</h2>
+            <label className="block mb-1" htmlFor="name">Nom</label>
+            <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="border p-2 w-full mb-2" />
+            <label className="block mb-1" htmlFor="address">Adresse</label>
+            <input id="address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} required className="border p-2 w-full mb-2" />
+            <div className="flex flex-row w-full space-x-5">
+                <div className="flex flex-col w-1/2">
+                    <label className="block mb-1" htmlFor="phone">Téléphone</label>
+                    <input id="phone" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} required className="border p-2 w-full mb-2" />
+                </div>
+                <div className="flex flex-col w-1/2">
+                    <label className="block mb-1" htmlFor="email">Email</label>
+                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border p-2 w-full mb-2" />
+                </div>
             </div>
-
-            <div className="mb-4">
-                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">Prénom</label>
-                <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
+            <label className="block mb-1" htmlFor="detail">Détails</label>
+            <input id="detail" type="text" value={detail} onChange={(e) => setDetail(e.target.value)} required className="border p-2 w-full mb-2" />
+            <div className="flex flex-row w-full space-x-5">
+                <div className="flex flex-col w-1/2">
+                    <label className="block mb-1" htmlFor="entreprise">Entreprise</label>
+                    <input id="entreprise" type="text" value={entreprise} onChange={(e) => setEntreprise(e.target.value)} required className="border p-2 w-full mb-2" />
+                </div>
+                <div className="flex flex-col w-1/2">
+                    <label className="block mb-1" htmlFor="entrepriseAddress">Adresse de l'Entreprise</label>
+                    <input id="entrepriseAddress" type="text" value={entrepriseAddress} onChange={(e) => setEntrepriseAddress(e.target.value)} required className="border p-2 w-full mb-2" />
+                </div>
             </div>
-
-            <div className="mb-4">
-                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Nom</label>
-                <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div className="mb-4">
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Téléphone</label>
-                <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div className="mb-4">
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700">Adresse</label>
-                <input
-                    type="text"
-                    id="address"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div className="mb-4">
-                <label htmlFor="city" className="block text-sm font-medium text-gray-700">Ville</label>
-                <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div className="mb-4">
-                <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700">Code Postal</label>
-                <input
-                    type="text"
-                    id="postalCode"
-                    name="postalCode"
-                    value={formData.postalCode}
-                    onChange={handleChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div className="mb-4">
-                <label htmlFor="country" className="block text-sm font-medium text-gray-700">Pays</label>
-                <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    className="mt-1 p-2 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-            </div>
-
-            <div className="flex justify-between mt-6">
-                <button
-                    type="submit"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-black hover:bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Enregistrer
-                </button>
-                <button
-                    type="button"
-                    onClick={onCancel}
-                    className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Annuler
-                </button>
-            </div>
+            <label className="block mb-1" htmlFor="entreprisePhone">Téléphone de l'Entreprise</label>
+            <input id="entreprisePhone" type="text" value={entreprisePhone} onChange={(e) => setEntreprisePhone(e.target.value)} required className="border p-2 w-full mb-2" />
+            <label className="block mb-1" htmlFor="siret">SIRET</label>
+            <input id="siret" type="text" value={siret} onChange={(e) => setSiret(e.target.value)} required className="border p-2 w-full mb-2" />
+            <label className="block mb-1" htmlFor="city">Ville</label>
+            <input id="city" type="text" value={city} onChange={(e) => setCity(e.target.value)} required className="border p-2 w-full mb-2" />
+            <button type="submit" className="bg-green-500 text-white py-1 px-3 rounded">
+                Sauvegarder
+            </button>
         </form>
     );
 };
 
-export default EditClientForm;
+// Composant principal de l'application
+const App = () => {
+    const [clients] = useState(initialClients);
+    const [selectedClientId, setSelectedClientId] = useState(""); // Valeur initiale vide
+    const selectedClient = clients.find(client => client.id === Number(selectedClientId));
+    const navigate = useNavigate(); // Utilisez useNavigate pour la redirection
+
+    const handleSelectChange = (e) => {
+        const value = e.target.value;
+        if (value === "addClient") {
+            navigate("/add_client"); // Redirige vers la page d'ajout de client
+        } else {
+            setSelectedClientId(value);
+        }
+    };
+
+    return (
+        <div className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold text-center mb-6">Gestion des Clients</h1>
+            <div className="mb-4">
+                <label htmlFor="clientSelect" className="block mb-2">Sélectionnez un Client:</label>
+                <select
+                    id="clientSelect"
+                    value={selectedClientId}
+                    onChange={handleSelectChange}
+                    className="border p-2 w-full"
+                >
+                    <option value="" disabled>Sélectionnez un nom</option>
+                    {clients.map(client => (
+                        <option key={client.id} value={client.id}>
+                            {client.name}
+                        </option>
+                    ))}
+                    <option value="addClient">Ajouter un autre client</option>
+                </select>
+            </div>
+            {selectedClient && <ClientForm client={selectedClient} />}
+            {!selectedClient && <ClientForm client={null} />}
+        </div>
+    );
+};
+
+export default App;
