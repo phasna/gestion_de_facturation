@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { clients } from '../ClientData/ClientsData.jsx'; // Assurez-vous que le chemin est correct
+import { CiSearch } from "react-icons/ci";
 
 const AddFacturation = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -48,14 +49,15 @@ const AddFacturation = () => {
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+            initial={{opacity: 0, scale: 0.8}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.5}}
             className="max-w-full h-screen mx-auto p-6 flex flex-col"
         >
+            <h2 className="text-3xl font-semibold text-center my-10">Crée un devis</h2>
+
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-semibold">Crée un devis</h2>
-                <div className="relative w-1/3">
+                <div className="absolute right-7 w-1/5">
                     <input
                         type="text"
                         value={searchTerm}
@@ -63,7 +65,7 @@ const AddFacturation = () => {
                             setSearchTerm(e.target.value);
                             setIsOpen(e.target.value.length > 0); // Ouvrir le dropdown si du texte est saisi
                         }}
-                        placeholder="Rechercher un client..."
+                        placeholder="Rechercher un client... "
                         className="mt-4 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                     {isOpen && filteredClients.length > 0 && (
@@ -99,7 +101,8 @@ const AddFacturation = () => {
                 </div>
 
                 <div>
-                    <label htmlFor="appareil" className="block text-sm font-medium text-gray-700">Type de Prestations</label>
+                    <label htmlFor="appareil" className="block text-sm font-medium text-gray-700">Type de
+                        Prestations</label>
                     <select
                         id="appareil"
                         value={selectedAppareil}

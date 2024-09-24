@@ -1,20 +1,21 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { clients } from '../ClientData/ClientsData.jsx'; // Assurez-vous que le chemin est correct
+import { CiSearch } from "react-icons/ci";
 
 const AddFacturation = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [prestations, setPrestations] = useState([]); // Initialiser avec un tableau vide
-    const [clients] = useState(['clistina cruz', 'jean christophe', 'minna jenna']);
-    const [prestationsService] = useState(['Crée un site', 'Développer un application', 'Reprendre ancien site']);
+    const [prestations, setPrestations] = useState([]);
     const [selectedClient, setSelectedClient] = useState('');
     const [selectedAppareil, setSelectedAppareil] = useState('');
     const [showPrestations, setShowPrestations] = useState(false);
     const [displayCount, setDisplayCount] = useState(2);
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Fonction pour ajouter une nouvelle prestation
     const addPrestation = () => {
         setPrestations([...prestations, { service: '', price: '' }]);
-        setShowPrestations(true); // Afficher la section des prestations
+        setShowPrestations(true);
     };
 
     // Fonction pour gérer les changements dans les champs
@@ -31,45 +32,85 @@ const AddFacturation = () => {
         setSelectedClient('');
         setSelectedAppareil('');
         setShowPrestations(false);
+        setSearchTerm('');
+    };
+
+    // Filtrer les clients en fonction du terme de recherche
+    const filteredClients = clients.filter(client =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Fonction pour sélectionner un client
+    const handleClientSelect = (clientName) => {
+        setSelectedClient(clientName);
+        setSearchTerm(clientName); // Mettre à jour le terme de recherche pour la barre
+        setIsOpen(false); // Fermer le dropdown après la sélection
     };
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="max-w-full h-screen mx-auto p-6"
+            initial={{opacity: 0, scale: 0.8}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.5}}
+            className="max-w-full h-screen mx-auto p-6 flex flex-col"
         >
-            <h2 className="text-2xl font-semibold mb-6">Crée un facture</h2>
+            <h2 className="text-3xl font-semibold text-center my-10">Crée un facture</h2>
+
+            <div className="flex justify-between items-center mb-6">
+                <div className="absolute right-7 w-1/5">
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setIsOpen(e.target.value.length > 0); // Ouvrir le dropdown si du texte est saisi
+                        }}
+                        placeholder="Rechercher un client... "
+                        className="mt-4 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                    {isOpen && filteredClients.length > 0 && (
+                        <ul className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-auto">
+                            {filteredClients.map((client) => (
+                                <li
+                                    key={client.id}
+                                    onClick={() => handleClientSelect(client.name)}
+                                    className="px-3 py-2 cursor-pointer hover:bg-indigo-100"
+                                >
+                                    {client.name}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
 
             <form className="space-y-6">
                 <div>
                     <label htmlFor="client" className="block text-sm font-medium text-gray-700">Client</label>
                     <select
-                        id="client"
+                        id="client-select"
                         value={selectedClient}
                         onChange={(e) => setSelectedClient(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-4 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
                         <option value="">Sélectionner un client</option>
-                        {clients.map((client, index) => (
-                            <option key={index} value={client}>{client}</option>
+                        {filteredClients.map((client) => (
+                            <option key={client.id} value={client.name}>{client.name}</option>
                         ))}
                     </select>
                 </div>
 
                 <div>
-                    <label htmlFor="appareil" className="block text-sm font-medium text-gray-700">Type de Prestions</label>
+                    <label htmlFor="appareil" className="block text-sm font-medium text-gray-700">Type de
+                        Prestations</label>
                     <select
                         id="appareil"
                         value={selectedAppareil}
                         onChange={(e) => setSelectedAppareil(e.target.value)}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
-                        <option value="">Sélectionner un prestation</option>
-                        {prestationsService.map((prestationsService, index) => (
-                            <option key={index} value={prestationsService}>{prestationsService}</option>
-                        ))}
+                        <option value="">Sélectionner une prestation</option>
+                        {/* Ajoutez vos services ici */}
                     </select>
                 </div>
 
@@ -112,7 +153,7 @@ const AddFacturation = () => {
 
                 {/* Boutons pour ajouter et annuler les prestations */}
                 <div className="flex flex-col">
-                    <div className={"flex flex-row space-x-4"}>
+                    <div className="flex flex-row space-x-4">
                         <button
                             type="button"
                             onClick={addPrestation}
