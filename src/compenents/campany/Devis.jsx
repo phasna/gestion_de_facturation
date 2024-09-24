@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { clients } from '../ClientData/ClientsData.jsx'; // Assurez-vous que le chemin est correct
 
 const AddFacturation = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [prestations, setPrestations] = useState([]); // Initialiser avec un tableau vide
-    const [clients] = useState(['clistina cruz', 'jean christophe', 'minna jenna']);
-    const [prestationsService] = useState(['Crée un site', 'Développer un application', 'Reprendre ancien site']);
+    const [prestations, setPrestations] = useState([]);
     const [selectedClient, setSelectedClient] = useState('');
     const [selectedAppareil, setSelectedAppareil] = useState('');
     const [showPrestations, setShowPrestations] = useState(false);
     const [displayCount, setDisplayCount] = useState(2);
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Fonction pour ajouter une nouvelle prestation
     const addPrestation = () => {
         setPrestations([...prestations, { service: '', price: '' }]);
-        setShowPrestations(true); // Afficher la section des prestations
+        setShowPrestations(true);
     };
 
     // Fonction pour gérer les changements dans les champs
@@ -31,6 +31,19 @@ const AddFacturation = () => {
         setSelectedClient('');
         setSelectedAppareil('');
         setShowPrestations(false);
+        setSearchTerm('');
+    };
+
+    // Filtrer les clients en fonction du terme de recherche
+    const filteredClients = clients.filter(client =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Fonction pour sélectionner un client
+    const handleClientSelect = (clientName) => {
+        setSelectedClient(clientName);
+        setSearchTerm(clientName); // Mettre à jour le terme de recherche pour la barre
+        setIsOpen(false); // Fermer le dropdown après la sélection
     };
 
     return (
@@ -38,38 +51,63 @@ const AddFacturation = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="max-w-full h-screen mx-auto p-6"
+            className="max-w-full h-screen mx-auto p-6 flex flex-col"
         >
-            <h2 className="text-2xl font-semibold mb-6">Crée un devie</h2>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-semibold">Crée un devis</h2>
+                <div className="relative w-1/3">
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => {
+                            setSearchTerm(e.target.value);
+                            setIsOpen(e.target.value.length > 0); // Ouvrir le dropdown si du texte est saisi
+                        }}
+                        placeholder="Rechercher un client..."
+                        className="mt-4 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                    {isOpen && filteredClients.length > 0 && (
+                        <ul className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-auto">
+                            {filteredClients.map((client) => (
+                                <li
+                                    key={client.id}
+                                    onClick={() => handleClientSelect(client.name)}
+                                    className="px-3 py-2 cursor-pointer hover:bg-indigo-100"
+                                >
+                                    {client.name}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
 
             <form className="space-y-6">
                 <div>
                     <label htmlFor="client" className="block text-sm font-medium text-gray-700">Client</label>
                     <select
-                        id="client"
+                        id="client-select"
                         value={selectedClient}
                         onChange={(e) => setSelectedClient(e.target.value)}
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-4 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
                         <option value="">Sélectionner un client</option>
-                        {clients.map((client, index) => (
-                            <option key={index} value={client}>{client}</option>
+                        {filteredClients.map((client) => (
+                            <option key={client.id} value={client.name}>{client.name}</option>
                         ))}
                     </select>
                 </div>
 
                 <div>
-                    <label htmlFor="appareil" className="block text-sm font-medium text-gray-700">Type de Prestions</label>
+                    <label htmlFor="appareil" className="block text-sm font-medium text-gray-700">Type de Prestations</label>
                     <select
                         id="appareil"
                         value={selectedAppareil}
                         onChange={(e) => setSelectedAppareil(e.target.value)}
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
-                        <option value="">Sélectionner un prestation</option>
-                        {prestationsService.map((prestationsService, index) => (
-                            <option key={index} value={prestationsService}>{prestationsService}</option>
-                        ))}
+                        <option value="">Sélectionner une prestation</option>
+                        {/* Ajoutez vos services ici */}
                     </select>
                 </div>
 
@@ -112,22 +150,22 @@ const AddFacturation = () => {
 
                 {/* Boutons pour ajouter et annuler les prestations */}
                 <div className="flex flex-col">
-                    <div className={"flex flex-row space-x-4"}>
-                    <button
-                        type="button"
-                        onClick={addPrestation}
-                        className="w-1/5 mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                    >
-                        Ajouter une prestation +
-                    </button>
+                    <div className="flex flex-row space-x-4">
+                        <button
+                            type="button"
+                            onClick={addPrestation}
+                            className="w-1/5 mt-4 px-4 py-2 bg-green-600 text-white font-semibold rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        >
+                            Ajouter une prestation +
+                        </button>
 
-                    <button
-                        type="button"
-                        onClick={handleCancel}
-                        className="w-1/5 mt-4 px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
-                        Annuler
-                    </button>
+                        <button
+                            type="button"
+                            onClick={handleCancel}
+                            className="w-1/5 mt-4 px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                        >
+                            Annuler
+                        </button>
                     </div>
 
                     <button
