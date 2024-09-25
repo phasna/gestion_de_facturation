@@ -18,7 +18,7 @@ const AddFacturation = () => {
             transition={{ duration: 0.5 }}
             className="max-w-full h-screen mx-auto p-6"
         >
-            <h2 className="text-2xl font-semibold mb-6">Ajouter nouveau utilisateur</h2>
+            <h2 className="text-3xl font-semibold mb-6 text-center lg:mb-20 lg:mt-10">Ajouter nouveau utilisateur</h2>
 
             <form className="space-y-6">
 

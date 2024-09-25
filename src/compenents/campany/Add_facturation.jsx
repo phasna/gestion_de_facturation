@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { clients } from '../ClientData/ClientsData.jsx'; // Assurez-vous que le chemin est correct
-import { CiSearch } from "react-icons/ci";
+import { clients } from '../ClientData/ClientsData.jsx';
+import { FaSearch } from 'react-icons/fa';
 
 const AddFacturation = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -54,10 +54,10 @@ const AddFacturation = () => {
             transition={{duration: 0.5}}
             className="max-w-full h-screen mx-auto p-6 flex flex-col"
         >
-            <h2 className="text-3xl font-semibold text-center my-10">Crée un facture</h2>
+            <h2 className="text-3xl font-semibold text-center my-10">Crée une facture</h2>
 
-            <div className="flex justify-between items-center mb-6">
-                <div className="absolute right-7 w-1/5">
+            <div className="flex justify-between items-center mb-6 absolute right-5">
+                <div className="relative w-full">
                     <input
                         type="text"
                         value={searchTerm}
@@ -68,8 +68,12 @@ const AddFacturation = () => {
                         placeholder="Rechercher un client... "
                         className="mt-4 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
+                    <div className="absolute right-2 top-8 transform -translate-y-1/2">
+                        <FaSearch className="text-gray-400"/>
+                    </div>
+
                     {isOpen && filteredClients.length > 0 && (
-                        <ul className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-auto">
+                        <ul className="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg mt-1 max-h-60 overflow-auto w-full">
                             {filteredClients.map((client) => (
                                 <li
                                     key={client.id}
@@ -171,12 +175,16 @@ const AddFacturation = () => {
                         </button>
                     </div>
 
-                    <button
-                        type="submit"
-                        className="w-1/4 mt-6 px-4 py-2 bg-black text-white font-semibold rounded-md shadow-sm hover:bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        Envoyer
-                    </button>
+                    <div className={"flex flex-row"}>
+
+                        <button
+                            type="submit"
+                            className="w-1/4 mt-6 px-4 py-2 bg-black text-white font-semibold rounded-md shadow-sm hover:bg-opacity-70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        >
+                            Envoyer
+                        </button>
+
+                    </div>
                 </div>
             </form>
         </motion.div>

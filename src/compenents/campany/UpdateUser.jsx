@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { clients as initialClients } from '../ClientData/ClientsData.jsx';
 import { FaSearch } from 'react-icons/fa'; // Assurez-vous d'installer react-icons
+import { motion } from 'framer-motion'; // Import de Framer Motion
 
 // Formulaire pour afficher et modifier les informations d'un client
 const ClientForm = ({ client }) => {
@@ -49,44 +50,52 @@ const ClientForm = ({ client }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="mb-4 p-4 border rounded bg-white">
+        <motion.form
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            onSubmit={handleSubmit}
+            className="mb-4 p-4  bg-white ">
             <h2 className="text-xl font-bold mb-2">Informations du Client</h2>
+
             <label className="block mb-1" htmlFor="name">Nom</label>
-            <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="border p-2 w-full mb-2" />
+            <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
+
             <label className="block mb-1" htmlFor="address">Adresse</label>
-            <input id="address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} required className="border p-2 w-full mb-2" />
+            <input id="address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
+
             <div className="flex flex-row w-full space-x-5">
                 <div className="flex flex-col w-1/2">
                     <label className="block mb-1" htmlFor="phone">Téléphone</label>
-                    <input id="phone" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} required className="border p-2 w-full mb-2" />
+                    <input id="phone" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
                 </div>
                 <div className="flex flex-col w-1/2">
                     <label className="block mb-1" htmlFor="email">Email</label>
-                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border p-2 w-full mb-2" />
+                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
                 </div>
             </div>
             <label className="block mb-1" htmlFor="detail">Détails</label>
-            <input id="detail" type="text" value={detail} onChange={(e) => setDetail(e.target.value)} required className="border p-2 w-full mb-2" />
+            <input id="detail" type="text" value={detail} onChange={(e) => setDetail(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
             <div className="flex flex-row w-full space-x-5">
                 <div className="flex flex-col w-1/2">
                     <label className="block mb-1" htmlFor="entreprise">Entreprise</label>
-                    <input id="entreprise" type="text" value={entreprise} onChange={(e) => setEntreprise(e.target.value)} required className="border p-2 w-full mb-2" />
+                    <input id="entreprise" type="text" value={entreprise} onChange={(e) => setEntreprise(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
                 </div>
                 <div className="flex flex-col w-1/2">
                     <label className="block mb-1" htmlFor="entrepriseAddress">Adresse de l'Entreprise</label>
-                    <input id="entrepriseAddress" type="text" value={entrepriseAddress} onChange={(e) => setEntrepriseAddress(e.target.value)} required className="border p-2 w-full mb-2" />
+                    <input id="entrepriseAddress" type="text" value={entrepriseAddress} onChange={(e) => setEntrepriseAddress(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
                 </div>
             </div>
             <label className="block mb-1" htmlFor="entreprisePhone">Téléphone de l'Entreprise</label>
-            <input id="entreprisePhone" type="text" value={entreprisePhone} onChange={(e) => setEntreprisePhone(e.target.value)} required className="border p-2 w-full mb-2" />
+            <input id="entreprisePhone" type="text" value={entreprisePhone} onChange={(e) => setEntreprisePhone(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
             <label className="block mb-1" htmlFor="siret">SIRET</label>
-            <input id="siret" type="text" value={siret} onChange={(e) => setSiret(e.target.value)} required className="border p-2 w-full mb-2" />
+            <input id="siret" type="text" value={siret} onChange={(e) => setSiret(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
             <label className="block mb-1" htmlFor="city">Ville</label>
-            <input id="city" type="text" value={city} onChange={(e) => setCity(e.target.value)} required className="border p-2 w-full mb-2" />
+            <input id="city" type="text" value={city} onChange={(e) => setCity(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
             <button type="submit" className="bg-black text-white py-3 px-12 rounded-xl mt-5">
                 Sauvegarder
             </button>
-        </form>
+        </motion.form>
     );
 };
 
@@ -114,10 +123,14 @@ const App = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold text-center mb-6">Gestion des Clients</h1>
+        <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="container mx-auto p-4">
+            <h1 className="text-3xl font-bold text-center my-6">Gestion des Clients</h1>
             <div className="flex justify-between items-center mb-4">
-                <label htmlFor="clientSelect" className="block mb-2">Sélectionnez un Client:</label>
+                <label htmlFor="clientSelect" className="block ">Sélectionnez un Client:</label>
                 <div className="relative w-64">
                     <input
                         type="text"
@@ -149,7 +162,7 @@ const App = () => {
                 id="clientSelect"
                 value={selectedClientId}
                 onChange={handleSelectChange}
-                className="border p-2 w-full mb-4"
+                className="border p-2 w-full mb-4 rounded-lg"
             >
                 <option value="" disabled>Sélectionnez un nom</option>
                 {filteredClients.map(client => ( // Utilisation de la liste filtrée
@@ -161,7 +174,7 @@ const App = () => {
             </select>
             {selectedClientId && <ClientForm client={clients.find(client => client.id === Number(selectedClientId))} />}
             {!selectedClientId && <ClientForm client={null} />}
-        </div>
+        </motion.div>
     );
 };
 

@@ -64,8 +64,10 @@ const lineOptions = {
     }
 };
 
+
+
 const pieData = {
-    labels: ['Produit A', 'Produit B', 'Produit C'],
+    labels: ['Développement web', 'Design', 'Réseaux'],
     datasets: [
         {
             label: 'Répartition du Chiffre d\'Affaires',

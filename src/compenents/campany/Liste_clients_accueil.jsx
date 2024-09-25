@@ -1,61 +1,95 @@
-// ClientList.jsx
+
+
 import { useState } from "react";
 import { FaDownload, FaEye, FaEllipsisV, FaTrash, FaEdit, FaEnvelope } from "react-icons/fa";
+import { IoSearchOutline } from "react-icons/io5";
 import { motion } from "framer-motion";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import logo from "../../../src/assets/img/logo_1.png";
 import { clients } from "../ClientData/ClientsData.jsx"; // Import des données des clients
+import { Link } from "react-router-dom";
 
 const iconStyles = "text-gray-600 cursor-pointer hover:text-blue-500";
 
+// Informations de l'entreprise
+const companyInfo = {
+    name: "Mon Entreprise",
+    address: "123 Rue de l'Exemple",
+    city: "75000 Paris",
+    phone: "+33 1 23 45 67 89",
+    email: "contact@monentreprise.com",
+};
+
 // Fonction pour générer un PDF
 const generatePDF = (client) => {
-    const doc = new jsPDF();
-    doc.setFontSize(13);
-    doc.addImage(logo, "PNG", 10, 0, 50, 50);
+    const pdfDoc = new jsPDF();
 
-    doc.text("Information Entreprise:", 15, 50);
-    doc.text(`Nom: ${client.entreprise}`, 15, 60);
-    doc.text(`Adresse: ${client.entreprise_address}`, 15, 65);
-    doc.text(`Téléphone: ${client.entreprise_phone}`, 15, 70);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 15, 75);
+    // Ajouter le logo
+    pdfDoc.addImage(logo, 'PNG', 10, 10, 30, 30); // Ajustez la position et la taille selon vos besoins
 
-    doc.text("Information Client:", 150, 75);
-    doc.text(`Nom: ${client.name}`, 150, 85);
-    doc.text(`Adresse: ${client.address}`, 150, 90);
-    doc.text(`Téléphone: ${client.phone}`, 150, 95);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, 100);
+    // Titre du document
+    pdfDoc.setFontSize(20);
+    pdfDoc.text("Facture", 14, 50);
 
-    const tableColumn = ["Numéro_facture", "Prestation", "Quantité", "Prix", "TVA"];
-    const tableRows = [
-        ["0001", "Développement Web", "1", "100", "20"],
-        ["0002", "Design", "2", "200", "40"],
-        ["0003", "Back-end", "2", "200", "40"],
+    // Informations de l'entreprise à gauche
+    pdfDoc.setFontSize(12);
+    pdfDoc.text(`Émis par : ${companyInfo.name}`, 14, 70);
+    pdfDoc.text(`${companyInfo.address}`, 14, 80);
+    pdfDoc.text(`${companyInfo.city}`, 14, 90);
+    pdfDoc.text(`Téléphone : ${companyInfo.phone}`, 14, 100);
+    pdfDoc.text(`Email : ${companyInfo.email}`, 14, 110);
+
+    // Informations du client à droite
+    pdfDoc.text(`Facturé à : ${client.name}`, 130, 70);
+    pdfDoc.text(`Adresse : ${client.address}`, 130, 80);
+    pdfDoc.text(`Ville : ${client.city}`, 130, 90);
+    pdfDoc.text(`Téléphone : ${client.phone}`, 130, 100);
+    pdfDoc.text(`Email : ${client.email}`, 130, 110);
+
+    // Ajouter des lignes de facturation (description, quantité, prix unitaire, total)
+    const items = [
+        ["Description", "Quantité", "Prix Unitaire", "Total"],
+        ["Développement web ", "2", "100€", "200€"],
+        ["Design ", "1", "50€", "50€"],
+        ["Réseaux", "3", "30€", "90€"],
     ];
 
-    doc.autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: 125,
-        theme: "striped",
+    // Colonnes de sous-total, TVA et Total
+    const summary = [
+        ["Sous-total", "340€"],
+        ["TVA (20%)", "68€"],
+        ["Total", "408€"],
+    ];
+
+    // Générer le tableau des articles
+    pdfDoc.autoTable({
+        head: [items[0]],
+        body: items.slice(1),
+        startY: 130,
     });
 
-    const totalHT = tableRows.reduce((acc, row) => acc + parseFloat(row[3] || 0), 0);
-    const totalTVA = tableRows.reduce((acc, row) => acc + parseFloat(row[4] || 0), 0);
-    const totalTTC = totalHT + totalTVA;
-
-    const totalsColumn = ["Total HT", "Total TVA", "Total TTC"];
-    const totalsRows = [[`${totalHT.toFixed(2)} €`, `${totalTVA.toFixed(2)} €`, `${totalTTC.toFixed(2)} €`]];
-
-    doc.autoTable({
-        head: [totalsColumn],
-        body: totalsRows,
-        startY: doc.autoTable.previous.finalY + 10,
-        theme: "striped",
+    // Ajouter les colonnes pour sous-total, TVA et Total
+    let finalY = pdfDoc.lastAutoTable.finalY + 10; // Position après le tableau
+    pdfDoc.autoTable({
+        head: [["Description", "Montant"]],
+        body: summary,
+        startY: finalY,
+        theme: 'grid',
+        styles: { cellPadding: 2, fontSize: 10 },
     });
 
-    return doc;
+    // Ajouter le paragraphe concernant le paiement
+    finalY = pdfDoc.lastAutoTable.finalY + 10; // Position après le tableau de résumé
+    pdfDoc.setFontSize(10);
+    pdfDoc.text(
+        "Veuillez payer dans les délais indiqués. Sinon, une amende sera appliquée.",
+        14,
+        finalY
+    );
+
+    // Retourner le document
+    return pdfDoc;
 };
 
 const ClientCard = ({ client, onDelete }) => {
@@ -78,18 +112,11 @@ const ClientCard = ({ client, onDelete }) => {
         setShowActions(!showActions);
     };
 
-    const handleToggleOpen = () => {
-        setIsOpen(!isOpen);
-        if (isOpen) {
-            setShowActions(false);
-        }
-    };
-
     return (
         <div className="mb-4">
             <motion.div
                 className="bg-gray-200 px-5 py-2 rounded shadow cursor-pointer w-full"
-                onClick={handleToggleOpen}
+                onClick={() => setIsOpen(!isOpen)}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
@@ -134,10 +161,12 @@ const ClientCard = ({ client, onDelete }) => {
                                         <FaTrash className={`${iconStyles} text-red-500`} title="Supprimer" />
                                         <span className="ml-2">Supprimer</span>
                                     </div>
-                                    <div className="flex items-center justify-between mt-2 hover:text-blue-500">
-                                        <FaEdit className={`${iconStyles} text-blue-500`} title="Modifier" />
-                                        <span className="ml-2">Modifier</span>
-                                    </div>
+                                    <Link to="/updateUser">
+                                        <div className="flex items-center justify-between mt-2 hover:text-blue-500">
+                                            <FaEdit className={`${iconStyles} text-blue-500`} title="Modifier" />
+                                            <span className="ml-2">Modifier</span>
+                                        </div>
+                                    </Link>
                                     <div className="flex items-center justify-between mt-2 hover:text-green-500">
                                         <FaEnvelope className={`${iconStyles} text-green-500`} title="Envoyer" />
                                         <span className="ml-2">Envoyer</span>
@@ -160,7 +189,6 @@ const ClientCard = ({ client, onDelete }) => {
 const ClientList = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [visibleClients, setVisibleClients] = useState(2);
-
     const [clientData, setClientData] = useState(clients); // Utilisez les données importées
 
     const handleDeleteClient = (clientId) => {
@@ -172,9 +200,13 @@ const ClientList = () => {
         setVisibleClients(visibleClients + 5);
     };
 
+    const filteredClients = clientData.filter((client) =>
+        client.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className="p-4">
-            <h1 className="text-3xl font-semibold mb-4 text-center mt-10">Liste rescences des Clients</h1>
+            <h1 className="text-3xl font-semibold my-10 text-center">Liste des Clients</h1>
             {/*<div className="mb-8 flex justify-end items-center space-x-2 mr-5">*/}
             {/*    <input*/}
             {/*        type="text"*/}
@@ -185,19 +217,23 @@ const ClientList = () => {
             {/*    <IoSearchOutline className="text-gray-500" />*/}
             {/*</div>*/}
 
-            {clientData
-                .filter(client => client.name.toLowerCase().includes(searchTerm.toLowerCase()))
-                .slice(0, visibleClients)
-                .map(client => (
+            {filteredClients.length > 0 ? (
+                filteredClients.slice(0, visibleClients).map((client) => (
                     <ClientCard key={client.id} client={client} onDelete={handleDeleteClient} />
-                ))}
+                ))
+            ) : (
+                <p className="text-center text-gray-500">Aucun résultat trouvé.</p>
+            )}
 
-            {visibleClients < clientData.length && (
-                <div className="flex justify-center mt-4">
-                    <button onClick={handleSeeMore} className="text-white bg-black hover:bg-opacity-80 py-3 px-7 w-1/5 rounded-xl">
-                        Voir plus clients
-                    </button>
-                </div>
+            {visibleClients < filteredClients.length && (
+
+                <Link to="/liste_clients">
+                    <div className="flex justify-center mt-4">
+                        <button onClick={handleSeeMore} className="text-white bg-black hover:bg-opacity-80 py-3 px-7 w-1/5 rounded-xl">
+                            Voir plus clients
+                        </button>
+                    </div>
+                </Link>
             )}
         </div>
     );
