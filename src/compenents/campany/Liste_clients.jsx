@@ -215,22 +215,23 @@ const ClientList = () => {
                 />
             </div>
 
-            {filteredClients.length > 0 ? (
-                filteredClients.slice(0, visibleClients).map((client) => (
-                    <ClientCard key={client.id} client={client} onDelete={handleDeleteClient} />
-                ))
-            ) : (
-                <p className="text-center text-gray-500">Aucun résultat trouvé.</p>
-            )}
+            {/* Conteneur avec overflow-auto */}
+            <div className="max-h-[80vh] overflow-auto">
+                {filteredClients.length > 0 ? (
+                    filteredClients.slice(0, visibleClients).map((client) => (
+                        <ClientCard key={client.id} client={client} onDelete={handleDeleteClient} />
+                    ))
+                ) : (
+                    <p className="text-center text-gray-500">Aucun résultat trouvé.</p>
+                )}
+            </div>
 
             {visibleClients < filteredClients.length && (
-
-
                 <div className="flex justify-center mt-4">
-                <button onClick={handleSeeMore} className="text-white bg-black hover:bg-opacity-80 py-3 px-7 w-1/5 rounded-xl">
-            Voir plus clients
-        </button>
-</div>
+                    <button onClick={handleSeeMore} className="text-white bg-black hover:bg-opacity-80 py-3 px-7 w-1/5 rounded-xl">
+                        Voir plus clients
+                    </button>
+                </div>
             )}
         </div>
     );
