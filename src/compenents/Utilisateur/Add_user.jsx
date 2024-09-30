@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const AddUser = () => {
+const Add_user = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     // États pour capturer les champs du formulaire
@@ -14,6 +14,25 @@ const AddUser = () => {
     const [address, setAddress] = useState('');
     const [role, setRole] = useState('');
     const [poste, setPoste] = useState('');
+
+    const [postes, setPostes] = useState([]);  // Stocker les postes récupérés depuis la base de données
+    const [roles, setRoles] = useState([]);  // Stocker les rôles si nécessaires
+
+    // Récupérer la liste des postes disponibles depuis l'API
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/factures/postes/')  // URL de l'API pour récupérer les postes
+            .then(response => response.json())
+            .then(data => setPostes(data))  // Mettre à jour les postes
+            .catch(error => console.error('Erreur lors de la récupération des postes:', error));
+    }, []);
+
+    // Récupérer la liste des rôles disponibles depuis l'API
+    useEffect(() => {
+        fetch('http://127.0.0.1:8000/factures/roles/')  // URL de l'API pour récupérer les rôles (si nécessaire)
+            .then(response => response.json())
+            .then(data => setRoles(data))  // Mettre à jour les rôles
+            .catch(error => console.error('Erreur lors de la récupération des rôles:', error));
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -30,7 +49,6 @@ const AddUser = () => {
             role,
             poste
         };
-
 
         fetch('http://127.0.0.1:8000/factures/users/add/', {
             method: 'POST',
@@ -181,9 +199,11 @@ const AddUser = () => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
                         <option value="">Sélectionner un rôle</option>
-                        <option value="User">User</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Super Admin">Super Admin</option>
+                        {roles.map((role, index) => (
+                            <option key={index} value={role.nom_role}>
+                                {role.nom_role}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -196,9 +216,11 @@ const AddUser = () => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     >
                         <option value="">Sélectionner un poste</option>
-                        <option value="Développeur">Développeur</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Consultant">Consultant</option>
+                        {postes.map((poste, index) => (
+                            <option key={index} value={poste.nom_poste}>
+                                {poste.nom_poste}
+                            </option>
+                        ))}
                     </select>
                 </div>
 
@@ -215,4 +237,4 @@ const AddUser = () => {
     );
 };
 
-export default AddUser;
+export default Add_user;

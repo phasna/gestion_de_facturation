@@ -13,7 +13,13 @@ const AddFacturation = () => {
     // Récupérer la liste des clients depuis l'API
     useEffect(() => {
         fetch('http://127.0.0.1:8000/factures/clients/')
-            .then(response => response.json())
+            .then(response => {
+                console.log('Réponse reçue:', response);  // Ajoutez ceci pour voir la réponse
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => setClients(data))
             .catch(error => console.error('Erreur lors de la récupération des clients:', error));
     }, []);
@@ -44,6 +50,42 @@ const AddFacturation = () => {
         setPrestations([...prestations, { service: '', price: '' }]);
     };
 
+    // Fonction pour soumettre la facture au backend
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        // Préparer les données à envoyer au backend
+        const newFacture = {
+            client: selectedClient,  // L'ID du client sélectionné
+            prestations: prestations.map(p => ({
+                service: p.service,
+                price: p.price,
+            }))  // La liste des prestations ajoutées
+        };
+
+        // Envoyer les données au backend
+        fetch('http://127.0.0.1:8000/factures/add-facture/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newFacture),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Réinitialiser le formulaire ou rediriger vers une autre page
+                console.log('Facture créée avec succès:', data);
+                setPrestations([{ service: '', price: '' }]);  // Réinitialiser les prestations
+                setSelectedClient('');  // Réinitialiser le client
+                setSelectedPrestation('');  // Réinitialiser la prestation
+            } else {
+                console.error('Erreur lors de la création de la facture:', data.error);
+            }
+        })
+        .catch(error => console.error('Erreur lors de la requête POST:', error));
+    };
+
     return (
         <motion.div
             onClick={() => setIsOpen(!isOpen)}
@@ -54,7 +96,7 @@ const AddFacturation = () => {
         >
             <h2 className="text-2xl font-semibold mb-6">Créer une Facture</h2>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
                 {/* Sélection du client */}
                 <div>
                     <label htmlFor="client" className="block text-sm font-medium text-gray-700">Client</label>

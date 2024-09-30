@@ -28,8 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
 # Ajoute 'corsheaders' à la liste des applications installées
 INSTALLED_APPS = [
     'corsheaders',
@@ -40,31 +38,57 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'factures',  # Ton application factures
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
-# Ajoute le middleware 'corsheaders' avant le middleware commun
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # Ce middleware doit être ajouté en premier
-    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # Place corsheaders en haut de la liste
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Autoriser tous les domaines d'origine
+
 CORS_ALLOW_ALL_ORIGINS = True
 
-# Si tu souhaites autoriser seulement des origines spécifiques
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',  # React en mode développement
-#     'http://localhost:5173',  # Si tu utilises Vite.js pour React
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',  # Si vous utilisez React
+    'http://localhost:5173',  # Si vous utilisez Vite.js ou un autre outil
+    'http://127.0.0.1:8000',  # Adresse de votre backend Django
+]
+
+
+CORS_ALLOW_CREDENTIALS = True
+
+# Activer certaines méthodes HTTP
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+]
+
+# Autoriser certains headers
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'content-type',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Si nécessaire : définir les origines qui ne sont pas autorisées
+# CORS_ORIGIN_DENYLIST = [
+#     'http://some-malicious-site.com',
 # ]
 
-# Facultatif : si tu utilises des cookies ou des sessions
-CORS_ALLOW_CREDENTIALS = True
 
 
 
@@ -146,4 +170,10 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'factures.User'
+AUTH_USER_MODEL = 'factures.Connection'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
