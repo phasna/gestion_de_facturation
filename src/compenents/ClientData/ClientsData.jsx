@@ -12,7 +12,8 @@ import user_10 from "../../assets/img/user_1.png";
 export const clients = [
     {
         id: 1,
-        name: "Alice Smith",
+        firstName: "Alice",
+        lastName: "Smith",
         address: "123 Rue Exemple",
         phone: "0123456789",
         img: user_01,
@@ -22,11 +23,14 @@ export const clients = [
         entreprise_address: "1 allée des développeurs",
         entreprise_phone: "0654324561",
         siret: "23478986543",
-        city: "Lyon"
+        city: "Lyon",
+        status: "payé", // Statut de paiement
+        price: 1500,   // Prix
     },
     {
         id: 2,
-        name: "Bob Johnson",
+        firstName: "Bob",
+        lastName: "Johnson",
         address: "456 Rue Exemple",
         phone: "0987654321",
         img: user_02,
@@ -36,11 +40,14 @@ export const clients = [
         entreprise_address: "42 rue de l'innovation",
         entreprise_phone: "0634567890",
         siret: "34567891234",
-        city: "Marseille"
+        city: "Marseille",
+        status: "en attente", // Statut de paiement
+        price: 800,   // Prix
     },
     {
         id: 3,
-        name: "Clara Dupont",
+        firstName: "Clara",
+        lastName: "Dupont",
         address: "789 Rue Exemple",
         phone: "0123456780",
         img: user_03,
@@ -50,11 +57,14 @@ export const clients = [
         entreprise_address: "12 rue des applications",
         entreprise_phone: "0678901234",
         siret: "45678902345",
-        city: "Paris"
+        city: "Paris",
+        status: "payé", // Statut de paiement
+        price: 2000,   // Prix
     },
     {
         id: 4,
-        name: "David Martin",
+        firstName: "David",
+        lastName: "Martin",
         address: "321 Rue Exemple",
         phone: "0234567891",
         img: user_04,
@@ -64,11 +74,14 @@ export const clients = [
         entreprise_address: "23 avenue des stratégies",
         entreprise_phone: "0689123456",
         siret: "56789013456",
-        city: "Lille"
+        city: "Lille",
+        status: "en attente", // Statut de paiement
+        price: 1200,   // Prix
     },
     {
         id: 5,
-        name: "Emma Leblanc",
+        firstName: "Emma",
+        lastName: "Leblanc",
         address: "654 Rue Exemple",
         phone: "0345678902",
         img: user_05,
@@ -78,11 +91,14 @@ export const clients = [
         entreprise_address: "34 rue de la créativité",
         entreprise_phone: "0691234567",
         siret: "67890124567",
-        city: "Bordeaux"
+        city: "Bordeaux",
+        status: "payé", // Statut de paiement
+        price: 950,   // Prix
     },
     {
         id: 6,
-        name: "François Girard",
+        firstName: "François",
+        lastName: "Girard",
         address: "987 Rue Exemple",
         phone: "0456789013",
         img: user_06,
@@ -92,11 +108,14 @@ export const clients = [
         entreprise_address: "56 rue du commerce",
         entreprise_phone: "0612345678",
         siret: "78901235678",
-        city: "Nice"
+        city: "Nice",
+        status: "en attente", // Statut de paiement
+        price: 1800,   // Prix
     },
     {
         id: 7,
-        name: "Gisèle Morin",
+        firstName: "Gisèle",
+        lastName: "Morin",
         address: "159 Rue Exemple",
         phone: "0567890124",
         img: user_07,
@@ -106,11 +125,14 @@ export const clients = [
         entreprise_address: "78 avenue de l'audit",
         entreprise_phone: "0623456789",
         siret: "89012346789",
-        city: "Strasbourg"
+        city: "Strasbourg",
+        status: "payé", // Statut de paiement
+        price: 700,   // Prix
     },
     {
         id: 8,
-        name: "Hugo Moreau",
+        firstName: "Hugo",
+        lastName: "Moreau",
         address: "753 Rue Exemple",
         phone: "0678901235",
         img: user_08,
@@ -120,11 +142,14 @@ export const clients = [
         entreprise_address: "90 boulevard des partenariats",
         entreprise_phone: "0634567890",
         siret: "90123457890",
-        city: "Toulouse"
+        city: "Toulouse",
+        status: "en attente", // Statut de paiement
+        price: 1100,   // Prix
     },
     {
         id: 9,
-        name: "Inès Roux",
+        firstName: "Inès",
+        lastName: "Roux",
         address: "246 Rue Exemple",
         phone: "0789012346",
         img: user_09,
@@ -134,11 +159,14 @@ export const clients = [
         entreprise_address: "12 rue de l'assistance",
         entreprise_phone: "0645678901",
         siret: "01234568901",
-        city: "Nantes"
+        city: "Nantes",
+        status: "payé", // Statut de paiement
+        price: 1300,   // Prix
     },
     {
         id: 10,
-        name: "Julien Bernard",
+        firstName: "Julien",
+        lastName: "Bernard",
         address: "369 Rue Exemple",
         phone: "0890123457",
         img: user_10,
@@ -148,6 +176,8 @@ export const clients = [
         entreprise_address: "24 rue du marketing",
         entreprise_phone: "0656789012",
         siret: "12345679012",
-        city: "Montpellier"
+        city: "Montpellier",
+        status: "en attente", // Statut de paiement
+        price: 900,   // Prix
     },
 ];

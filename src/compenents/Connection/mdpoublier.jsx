@@ -17,16 +17,16 @@ const Mdpoublier = () => {
     };
 
     return (
-        <form className="bg-gradient-to-r from-black to-gray-900 w-screen h-screen p-4 flex justify-center items-center">
-            <div className="bg-gray-100 rounded-lg w-3/5 h-auto p-16 shadow-xl bg-opacity-90">
+        <form className="bg-gradient-to-r from-gray-900  to-blue-800 w-screen h-screen p-4 flex justify-center items-center">
+            <div className="bg-black bg-opacity-50 rounded-lg w-2/5 h-auto p-10 shadow-xl ">
                 <Link to="/" className="text-blue-500 hover:underline flex items-center mb-8">
                     <IoChevronBackCircleOutline className="w-8 h-8 mr-2" />
                     <span className="text-lg">Revenir</span>
                 </Link>
 
-                <h1 className="flex justify-center text-3xl font-bold mb-8 text-gray-800">Entrez votre email de récupération !</h1>
+                <h1 className="flex justify-center text-2xl font-bold mb-8 text-white">Entrez votre email de récupération !</h1>
                 <div className="group mb-8">
-                    <label htmlFor="email" className="block text-gray-700 font-semibold mb-2 text-lg">Votre email</label>
+                    <label htmlFor="email" className="block text-white font-semibold mb-3 text-lg">Votre email</label>
                     <input
                         type="text"
                         id="email"
@@ -40,11 +40,11 @@ const Mdpoublier = () => {
 
                 {error && <p className="text-red-500 text-sm mb-8">{error}</p>}
 
-                <div className="group">
+                <div className="group w-full flex justify-center items-center">
                     <button
                         type="button"
                         onClick={handleSubmit}
-                        className="mt-4 w-full px-6 py-3 bg-black text-white font-semibold rounded-md shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700 text-lg"
+                        className="mt-4 w-1/3 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-white text-lg"
                     >
                         Envoyer
                     </button>

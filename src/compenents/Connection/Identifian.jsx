@@ -48,12 +48,12 @@ const Identifian = () => {
     };
 
     return (
-        <form className="bg-gradient-to-r from-black to-gray-900 w-screen h-screen p-4 flex justify-center items-center">
-            <div className="bg-gray-100 bg-opacity-90 rounded-lg w-3/5 h-auto p-16 shadow-xl">
-                <h1 className="flex justify-center text-4xl font-bold pb-6 text-gray-800">Connectez-vous !</h1>
+        <form className="bg-gradient-to-r from-gray-900  to-blue-800 w-screen h-screen p-4 flex justify-center items-center">
+            <div className="bg-black bg-opacity-50 rounded-lg w-2/5 h-auto p-10  shadow-xl">
+                <h1 className="flex justify-center text-2xl font-bold pb-6 text-white">Connectez-vous !</h1>
 
                 <div className="group mb-8 relative">
-                    <label htmlFor="username" className="block text-gray-700 font-semibold mb-2">Identifiant</label>
+                    <label htmlFor="username" className="block text-white font-semibold mb-2">Identifiant</label>
                     <input
                         type="text"
                         id="username"
@@ -78,7 +78,7 @@ const Identifian = () => {
                 </div>
 
                 <div className="group mb-8 relative">
-                    <label htmlFor="password" className="block text-gray-700 font-semibold mb-2">Mot de passe</label>
+                    <label htmlFor="password" className="block text-white font-semibold mb-2">Mot de passe</label>
                     <input
                         type={showPassword ? "text" : "password"}
                         id="password"
@@ -102,11 +102,11 @@ const Identifian = () => {
                     Mot de passe oublié ?
                 </Link>
 
-                <div className="group">
+                <div className="group w-full flex justify-center items-center">
                     <button
                         type="button"
                         onClick={handleSubmit}
-                        className="mt-4 w-full px-6 py-3 bg-black text-white font-semibold rounded-md shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-700 text-lg"
+                        className="mt-4 w-1/3 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-white text-lg"
                     >
                         Connecter
                     </button>
