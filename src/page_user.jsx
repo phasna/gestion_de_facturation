@@ -13,7 +13,7 @@ import { IoAddCircle } from "react-icons/io5";
 const Menu = () => {
 
     return (
-        <div className="w-1/4 p-4 bg-gray-200 lg:block hidden">
+        <div className="w-1/4 p-4 bg-gray-200 lg:block hidden h-screen">
             <ul className="space-y-4">
                 <Link to="/add_projets" className="w-full">
                     <button

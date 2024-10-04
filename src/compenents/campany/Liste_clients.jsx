@@ -1,513 +1,356 @@
-import React, { useState } from "react";
-import { FaDownload, FaEllipsisV, FaEye, FaUser } from "react-icons/fa";
-import { motion } from "framer-motion";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-import logo from "../../../src/assets/img/logo_1.png";
-import { FaTrash, FaEdit, FaEnvelope } from 'react-icons/fa';
+import React, { useState } from 'react';
+import { FaDownload, FaEye, FaEllipsisV, FaSearch, FaPlus } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'; // Importer le module autotable
+import { clients } from "../ClientData/ClientsData.jsx"; // Import des données des clients
+import logo from '../../assets/img/logo_1.png'; // Assurez-vous que le chemin est correct
+import { Link } from "react-router-dom";
 
-import user_01 from "../../assets/img/user_1.png";
-import user_02 from "../../assets/img/user_2.png";
-import user_03 from "../../assets/img/user_3.png";
+// Composant pour chaque ligne de client
+const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => {
+    const [showActions, setShowActions] = useState(false);
 
+    const toggleActions = () => {
+        setShowActions(!showActions);
+    };
 
-// Styles communs pour les icônes
-const iconStyles = "text-gray-600 cursor-pointer hover:text-blue-500";
-
-const actionStyles = 'absolute right-0 top-full mt-2 hidden group-hover:flex flex-col bg-white shadow-lg p-2 rounded';
-
-// Fonction pour générer et télécharger le PDF
-const generatePDF = (client) => {
-    const doc = new jsPDF();
-    doc.setFontSize(13); // Définit la taille du texte à 13 points
-
-    doc.addImage(logo, "PNG", 10, 0, 50, 50); // Ajustez la position et la taille du logo selon vos besoins
-
-    doc.text("Information Entreprise:", 15, 50);
-    doc.text(`Nom: ${client.entreprise}`, 15, 60);
-    doc.text(`Adresse: ${client.entreprise_address}`, 15, 65);
-    doc.text(`Téléphone: ${client.entreprise_phone}`, 15, 70);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 15, 75);
-
-    doc.text("Information Client:", 150, 75);
-    doc.text(`Nom: ${client.name}`,150, 85);
-    doc.text(`Adresse: ${client.address}`, 150, 90);
-    doc.text(`Téléphone: ${client.phone}`, 150, 95);
-    doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, 100);
-
-    doc.text(
-        "Vous avez 15 jours pour régler la facture. En cas de retard, " +
-        "des frais supplémentaires de 15% du montant initial de la facture seront appliqués.",
-        150,
-        700
-    );
-
-    // Tableau des données de facturation
-    const tableColumn = [
-        "Numéro_facture",
-        "Prestation",
-        "Quantité",
-        "Prix",
-        "TVA",
-    ];
-    const tableRows = [
-        ["0001", "Développement Web", "1", "100", "20"],
-        ["0002", "Design", "2", "200", "40"],
-        ["0003", "Back-end", "2", "200", "40"],
-        ["0004", "Front-end", "2", "200", "40"],
-        ["0005", "Réseaux", "2", "200", "40"],
-        ["0006", "Facture", "2", "200", "40"],
-    ];
-
-    doc.autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: 125,
-        theme: "striped",
-    });
-
-    // Calcul des totaux
-    const totalHT = tableRows.reduce(
-        (acc, row) => acc + parseFloat(row[3] || 0),
-        0
-    );
-    const totalTVA = tableRows.reduce(
-        (acc, row) => acc + parseFloat(row[4] || 0),
-        0
-    );
-    const totalTTC = totalHT + totalTVA;
-
-    // Ajouter les totaux au PDF
-    const totalsColumn = ["Total HT", "Total TVA", "Total TTC"];
-    const totalsRows = [
-        [`${totalHT.toFixed(2)} €`],
-        [`${totalTVA.toFixed(2)} €`],
-        [`${totalTTC.toFixed(2)} €`],
-    ];
-
-    doc.autoTable({
-        head: [[...totalsColumn]],
-        body: [[...totalsRows.flat()]],
-        startY: doc.autoTable.previous.finalY + 10,
-        theme: "striped",
-        margin: { top: 20 },
-    });
-
-    // Réduire la taille du texte
-    doc.setFontSize(8); // Taille du texte réduite
-
-    // Ajouter le texte centré en bas de la page avec padding
-    const text =
-        "Vous avez 15 jours pour régler la facture. En cas de retard, des frais supplémentaires de 15% du montant initial de la facture seront appliqués.";
-    const pageWidth = doc.internal.pageSize.width;
-    const margin = 10; // Marge depuis le bas de la page
-    const paddingX = 20; // Padding horizontal
-    const lineWidth = pageWidth - 1 * paddingX; // Largeur maximale pour le texte
-    const yPosition = doc.internal.pageSize.height - margin;
-
-    // Diviser le texte en lignes
-    const lines = doc.splitTextToSize(text, lineWidth);
-
-    // Dessiner chaque ligne centrée
-    lines.forEach((line, index) => {
-        const textWidth = doc.getTextWidth(line);
-        const xPosition = (pageWidth - textWidth) / 2; // Centrer le texte
-        const yOffset = index * 10; // Espacement entre les lignes
-        doc.text(line, xPosition, yPosition + yOffset);
-    });
-    // Télécharge le PDF sous le nom 'facturation_clientid.pdf'
-    doc.save(`facturation_${client.id}.pdf`);
-};
-
-// Composant de carte de client
-const ClientCard = ({ client }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const handleViewPdf = () => {
+    const handleDownload = (client) => {
         const doc = new jsPDF();
-        doc.setFontSize(13); // Définit la taille du texte à 13 points
 
-        doc.addImage(logo, "PNG", 10, 0, 50, 50); // Ajustez la position et la taille du logo selon vos besoins
+        // Ajout du logo
+        doc.addImage(logo, 'PNG', 10, 0, 50, 50); // Position et taille du logo
 
-        doc.text("Information Entreprise:", 15, 50);
-        doc.text(`Nom: ${client.entreprise}`, 15, 60);
-        doc.text(`Adresse: ${client.entreprise_address}`, 15, 65);
-        doc.text(`Téléphone: ${client.entreprise_phone}`, 15, 70);
-        doc.text(`Date: ${new Date().toLocaleDateString()}`, 15, 75);
+        // Informations de l'entreprise
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text("Entreprise : Dpdev", 10, 50);
+        doc.text("Adresse : 12 allée des peupliers, 69001 Lyon", 10, 60);
+        doc.text("Téléphone : 06 44 76 82 34", 10, 70);
+        doc.text("Email : contact@entreprise.com", 10, 80);
 
-        doc.text("Information Client:", 150, 75);
-        doc.text(`Nom: ${client.name}`, 150, 85);
-        doc.text(`Adresse: ${client.address}`, 150, 90);
-        doc.text(`Téléphone: ${client.phone}`, 150, 95);
-        doc.text(`Date: ${new Date().toLocaleDateString()}`, 150, 100);
+        // Détails du client
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("Détails du Client", 140, 50);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Nom : ${client.firstName}`, 140, 60);
+        doc.text(`Prénom : ${client.lastName}`, 140, 70);
+        doc.text(`Adresse : ${client.address}`, 140, 80);
+        doc.text(`Téléphone : ${client.phone}`, 140, 90);
+        doc.text(`Email : ${client.email}`, 140, 100);
 
-        doc.text(
-            "Vous avez 15 jours pour régler la facture. En cas de retard, " +
-            "des frais supplémentaires de 15% du montant initial de la facture seront appliqués.",
-            150,
-            700
-        );
-
-        // Tableau des données de facturation
-        const tableColumn = [
-            "Numéro_facture",
-            "Prestation",
-            "Quantité",
-            "Prix",
-            "TVA",
-        ];
-        const tableRows = [
-            ["0001", "Développement Web", "1", "100", "20"],
-            ["0002", "Design", "2", "200", "20"],
-            ["0003", "Back-end", "2", "200", "20"],
-            ["0004", "Front-end", "2", "200", "20"],
-            ["0005", "Réseaux", "2", "200", "20"],
-            ["0006", "Facture", "2", "200", "20"],
+        // Détails des prestations
+        const services = [
+            { name: "Développement Web", description: "Création et maintenance de sites web", quantity: 2, priceHT: 600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
         ];
 
+        // Création du tableau
         doc.autoTable({
-            head: [tableColumn],
-            body: tableRows,
-            startY: 125,
-            theme: "striped",
+            head: [['Prestation', 'Description', 'Quantité', 'Prix Unitaire HT (€)', 'Total HT (€)']],
+            body: services.map(service => [
+                service.name,
+                service.description,
+                service.quantity,
+                service.priceHT.toFixed(2),
+                (service.priceHT * service.quantity).toFixed(2)
+            ]),
+            startY: 110,
+            theme: 'striped',
+            styles: {
+                fontSize: 10,
+                cellPadding: 2,
+                overflow: 'linebreak',
+                columnWidth: 'auto',
+            },
+            headStyles: {
+                fillColor: [22, 160, 133], // Couleur d'arrière-plan de l'en-tête
+                textColor: [255, 255, 255], // Couleur du texte de l'en-tête
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245], // Couleur des lignes paires
+            }
         });
 
         // Calcul des totaux
-        const totalHT = tableRows.reduce(
-            (acc, row) => acc + parseFloat(row[3] || 0),
-            0
-        );
-        const totalTVA = tableRows.reduce(
-            (acc, row) => acc + parseFloat(row[4] || 0),
-            0
-        );
-        const totalTTC = totalHT + totalTVA;
+        const totalHT = services.reduce((acc, service) => acc + (service.priceHT * service.quantity), 0);
+        const totalTTC = totalHT * 1.2; // Exemple d'une TVA de 20%
 
-        // Ajouter les totaux au PDF
-        const totalsColumn = ["Total HT", "Total TVA", "Total TTC"];
-        const totalsRows = [
-            [`${totalHT.toFixed(2)} €`],
-            [`${totalTVA.toFixed(2)} €`],
-            [`${totalTTC.toFixed(2)} €`],
-        ];
+        // Affichage des totaux
+        const finalY = doc.autoTable.previous.finalY; // Position du bas du tableau
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Total HT : ${totalHT.toFixed(2)} €`, 10, finalY + 10);
+        doc.text(`Total TTC : ${totalTTC.toFixed(2)} €`, 10, finalY + 20);
 
-        doc.autoTable({
-            head: [[...totalsColumn]],
-            body: [[...totalsRows.flat()]],
-            startY: doc.autoTable.previous.finalY + 10,
-            theme: "striped",
-            margin: { top: 20 },
-        });
+        // Ligne de séparation
+        doc.line(10, finalY + 25, 200, finalY + 25);
 
-        // Réduire la taille du texte
-        doc.setFontSize(8); // Taille du texte réduite
+        // Message de remerciement
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("Merci pour votre confiance!", 10, finalY + 30);
 
-        // Ajouter le texte centré en bas de la page avec padding
-        const text =
-            "Vous avez 15 jours pour régler la facture. En cas de retard, des frais supplémentaires de 15% du montant initial de la facture seront appliqués.";
-        const pageWidth = doc.internal.pageSize.width;
-        const margin = 10; // Marge depuis le bas de la page
-        const paddingX = 20; // Padding horizontal
-        const lineWidth = pageWidth - 1 * paddingX; // Largeur maximale pour le texte
-        const yPosition = doc.internal.pageSize.height - margin;
+        // Télécharger le fichier
+        doc.save(`facture_${client.firstName}_${client.lastName}.pdf`);
+    };
 
-        // Diviser le texte en lignes
-        const lines = doc.splitTextToSize(text, lineWidth);
 
-        // Dessiner chaque ligne centrée
-        lines.forEach((line, index) => {
-            const textWidth = doc.getTextWidth(line);
-            const xPosition = (pageWidth - textWidth) / 2; // Centrer le texte
-            const yOffset = index * 10; // Espacement entre les lignes
-            doc.text(line, xPosition, yPosition + yOffset);
-        });
-        // Visualiser le PDF dans une nouvelle fenêtre
-        doc.output("dataurlnewwindow");
+
+
+    const getStatusClass = (status) => {
+        switch (status) {
+            case 'payé':
+                return 'bg-green-100 text-green-700';
+            case 'en attente':
+                return 'bg-red-100 text-red-700';
+            default:
+                return 'bg-gray-100 text-gray-700'; // Couleur par défaut
+        }
     };
 
     return (
-        <motion.div
-            className="bg-gray-200 px-5 py-2 rounded shadow cursor-pointer w-full "
-            onClick={() => setIsOpen(!isOpen)}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
+        <motion.tr
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="bg-gray-50 hover:bg-gray-100 transition duration-300"
         >
-            <div className="flex items-center mb-3">
-                <img src={client.img} alt="" className={"w-20 h-20"} /> {client.name}
-            </div>
-            <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-                transition={{ duration: 0.3 }}
-            >
-                <div className="flex space-x-7 mb-3 justify-end ">
+            <td className="py-0 px-6">
+                <img src={client.img} alt={client.firstName} className="w-20 h-20 rounded-full" />
+            </td>
+            <td className="py-4 px-6">{client.firstName}</td>
+            <td className="py-4 px-6">{client.lastName}</td>
+            <td className="py-4 px-6">
+                <span className={`px-2 py-1 rounded-full text-xs ${getStatusClass(client.status)}`}>
+                    {client.status}
+                </span>
+            </td>
+            <td className="py-4 px-6">{client.price} €</td>
+            <td className="py-4 px-6 text-center">
+                <div className="flex justify-center space-x-3">
                     <FaEye
-                        className={iconStyles}
-                        title="Voir"
-                        onClick={(e) => {
-                            e.stopPropagation(); // Empêche la propagation du clic pour éviter l'ouverture/fermeture de la carte
-                            handleViewPdf();
-                        }}
+                        className="text-blue-500 cursor-pointer"
+                        title="Visualiser"
+                        onClick={() => onView(client)}
                     />
                     <FaDownload
-                        className={iconStyles}
+                        className="text-green-500 cursor-pointer"
                         title="Télécharger"
-                        onClick={(e) => {
-                            e.stopPropagation(); // Empêche la propagation du clic pour éviter l'ouverture/fermeture de la carte
-                            generatePDF(client, []);
-                        }}
+                        onClick={() => handleDownload(client)}
                     />
-                    <div className="relative group">
-                        <FaEllipsisV className={iconStyles} title="Options"/>
-                        <div className={`${actionStyles} grid grid-cols-1 gap-4 items-center`}>
-                            <div className="flex items-center justify-between">
-                                <FaTrash className={`${iconStyles} text-red-500`} title="Supprimer"/>
-                                <span className="ml-2">Supprimer</span>
+
+                    <div className="relative">
+                        <FaEllipsisV
+                            className="text-gray-500 cursor-pointer"
+                            title="Options"
+                            onClick={toggleActions}
+                        />
+                        {showActions && (
+                            <div className="absolute right-0 top-full mt-2 bg-white shadow-lg rounded-lg z-10 p-2">
+                                <button
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={() => onDelete(client)}
+                                >
+                                    Supprimer
+                                </button>
+                                <button
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={() => onEdit(client)}
+                                >
+                                    Modifier
+                                </button>
+                                <button
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={() => onSend(client)}
+                                >
+                                    Envoyer
+                                </button>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <FaEdit className={`${iconStyles} text-blue-500`} title="Modifier"/>
-                                <span className="ml-2">Modifier</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <FaEnvelope className={`${iconStyles} text-green-500`} title="Envoyer"/>
-                                <span className="ml-2">Envoyer</span>
-                            </div>
-                        </div>
+                        )}
                     </div>
-
-
                 </div>
-                {isOpen && (
-                    <div className="p-4 bg-gray-100 rounded mt-2">
-                        {client.name}, {client.detail}.
-                    </div>
-                )}
-            </motion.div>
-        </motion.div>
+            </td>
+        </motion.tr>
     );
 };
 
-// Données des clients triées par date
-const clientData = [
-    {
-        date: "22 Août 2024",
-        clients: [
-            {
-                id: 1,
-                name: "Alice Smith",
-                address: "123 Rue Exemple",
-                phone: "0123456789",
-                img: user_01,
-                email: "alice@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
+// Composant principal pour la liste des clients
+const ClientList = () => {
+    const [searchTerm, setSearchTerm] = useState("");
 
-            {
-                id: 2,
-                name: "Bob Johnson",
-                address: "456 Rue Exemple",
-                phone: "0987654321",
-                img: user_02,
-                email: "bob@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
+    const filteredClients = clients.filter((client) =>
+        client.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        client.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-            {
-                id: 3,
-                name: "Charlie Brown",
-                address: "789 Rue Exemple",
-                phone: "1234567890",
-                img: user_03,
-                email: "charlie@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_phone: "0654324561",
-            },
-        ],
-    },
+    const handleView = (client) => {
+        const doc = new jsPDF();
 
-    {
-        date: "31 Mai 2024",
-        clients: [
-            {
-                id: 4,
-                name: "Jean Christophe",
-                address: "101 Rue Exemple",
-                phone: "1122334455",
-                img: user_01,
-                email: "jean@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
+        // Ajout du logo
+        doc.addImage(logo, 'PNG', 10, 0, 50, 50); // Position et taille du logo
 
-            {
-                id: 5,
-                name: "Jennie Fana",
-                address: "202 Rue Exemple",
-                phone: "5566778899",
-                img: user_02,
-                email: "jennie@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
+        // Informations de l'entreprise
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text("Entreprise : Dpdev", 10, 50);
+        doc.text("Adresse : 12 allée des peupliers, 69001 Lyon", 10, 60);
+        doc.text("Téléphone : 06 44 76 82 34", 10, 70);
+        doc.text("Email : contact@entreprise.com", 10, 80);
 
-            {
-                id: 6,
-                name: "Pierre Brown",
-                address: "303 Rue Exemple",
-                phone: "6677889900",
-                img: user_03,
-                email: "pierre@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-        ],
-    },
-    {
-        date: "15 Septembre 2024",
-        clients: [
-            {
-                id: 7,
-                name: "Emily Davis",
-                address: "404 Rue Exemple",
-                phone: "7788990011",
-                img: user_01,
-                email: "emily@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
+        // Détails du client
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("Détails du Client", 140, 50);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Nom : ${client.firstName}`, 140, 60);
+        doc.text(`Prénom : ${client.lastName}`, 140, 70);
+        doc.text(`Adresse : ${client.address}`, 140, 80);
+        doc.text(`Téléphone : ${client.phone}`, 140, 90);
+        doc.text(`Email : ${client.email}`, 140, 100);
 
-            {
-                id: 8,
-                name: "Michael Wilson",
-                address: "505 Rue Exemple",
-                phone: "8899001122",
-                img: user_02,
-                email: "michael@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
+        // Détails des prestations
+        const services = [
+            { name: "Développement Web", description: "Création et maintenance de sites web", quantity: 2, priceHT: 600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+        ];
 
-            {
-                id: 9,
-                name: "Sarah Brown",
-                address: "606 Rue Exemple",
-                phone: "9900112233",
-                img: user_03,
-                email: "sarah@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
+        // Création du tableau
+        doc.autoTable({
+            head: [['Prestation', 'Description', 'Quantité', 'Prix Unitaire HT (€)', 'Total HT (€)']],
+            body: services.map(service => [
+                service.name,
+                service.description,
+                service.quantity,
+                service.priceHT.toFixed(2),
+                (service.priceHT * service.quantity).toFixed(2)
+            ]),
+            startY: 110,
+            theme: 'striped',
+            styles: {
+                fontSize: 10,
+                cellPadding: 2,
+                overflow: 'linebreak',
+                columnWidth: 'auto',
             },
-        ],
-    },
-
-    {
-        date: "01 Octobre 2024",
-        clients: [
-            {
-                id: 10,
-                name: "Daniel Lee",
-                address: "707 Rue Exemple",
-                phone: "1011121314",
-                img: user_02,
-                email: "daniel@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
+            headStyles: {
+                fillColor: [22, 160, 133], // Couleur d'arrière-plan de l'en-tête
+                textColor: [255, 255, 255], // Couleur du texte de l'en-tête
             },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245], // Couleur des lignes paires
+            }
+        });
 
-            {
-                id: 11,
-                name: "Olivia Smith",
-                address: "808 Rue Exemple",
-                phone: "2122232425",
-                img: user_01,
-                email: "olivia@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
+        // Calcul des totaux
+        const totalHT = services.reduce((acc, service) => acc + (service.priceHT * service.quantity), 0);
+        const totalTTC = totalHT * 1.2; // Exemple d'une TVA de 20%
 
-            {
-                id: 12,
-                name: "David Garcia",
-                address: "909 Rue Exemple",
-                phone: "3233343536",
-                img: user_03,
-                email: "david@example.com",
-                detail:
-                    "Client d'application après trois prestations et demande un devis.",
-                entreprise: "dpdev",
-                entreprise_address: "1 allée des chemin",
-                entreprise_phone: "0654324561",
-            },
-        ],
-    },
-];
+        // Affichage des totaux
+        const finalY = doc.autoTable.previous.finalY; // Position du bas du tableau
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Total HT : ${totalHT.toFixed(2)} €`, 10, finalY + 10);
+        doc.text(`Total TTC : ${totalTTC.toFixed(2)} €`, 10, finalY + 20);
 
-// Composant principal pour afficher les listes de clients
-const ListeClients = () => (
-    <div className="min-h-screen bg-white p-4">
-        <h1 className="text-2xl mb-4 my-10 text-center font-semibold">
-            Liste des Clients
-        </h1>
-        <div className="w-full flex flex-col items-center">
-            {clientData.map(({ date, clients }) => (
-                <div key={date} className="w-full max-w-screen-lg px-4 mb-6">
-                    <motion.h3
-                        className="text-xl my-5 border-b pb-2 border-gray-300"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        {date}
-                    </motion.h3>
-                    <div className="space-y-5">
-                        {clients.map((client) => (
-                            <ClientCard key={client.id} client={client} />
-                        ))}
+        // Ligne de séparation
+        doc.line(10, finalY + 25, 200, finalY + 25);
+
+        // Message de remerciement
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("Merci pour votre confiance!", 10, finalY + 30);
+
+        window.open(doc.output('bloburl'), '_blank');
+    };
+
+    const handleDownload = (client) => {
+        const doc = new jsPDF();
+        alert(`Téléchargement de la facture pour ${client.firstName} ${client.lastName}`);
+        doc.save(`facture_${client.firstName}_${client.lastName}.pdf`);
+    };
+
+    const handleDelete = (client) => {
+        alert(`Client ${client.firstName} ${client.lastName} supprimé`);
+    };
+
+    const handleEdit = (client) => {
+        alert(`Modifier le client : ${client.firstName} ${client.lastName}`);
+    };
+
+    const handleSend = (client) => {
+        alert(`Envoyer une facture à ${client.firstName} ${client.lastName}`);
+    };
+
+    return (
+        <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+            <header className="bg-blue-700 py-6">
+                <motion.h1
+                    initial={{opacity: 0, scale: 0.8}}
+                    animate={{opacity: 1, scale: 1}}
+                    transition={{duration: 0.5}}
+                    className="text-center text-4xl font-bold">Gestion des Clients</motion.h1>
+            </header>
+
+            <motion.main
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
+                className="container mx-auto p-10">
+                <div className="mb-8 flex justify-between items-center">
+                    <div className="relative w-1/2">
+                        <FaSearch className="absolute left-3 top-3 text-gray-400"/>
+                        <input
+                            type="text"
+                            placeholder="Rechercher des clients..."
+                            className="w-full bg-white text-gray-800 rounded-full pl-10 pr-4 py-2 focus:outline-none shadow-md"
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
+                    <Link to={"/add_client"}>
+                        <button
+                            className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md flex items-center">
+                            <FaPlus className="mr-2"/> Ajouter un client
+                        </button>
+                    </Link>
                 </div>
-            ))}
-            <div className="flex justify-center items-center mt-5 w-full">
-                <button className="text-white border-2 rounded-xl border-white py-4 px-5 bg-black hover:bg-opacity-50 hover:text-black w-2/6">
-                    Afficher plus
-                </button>
-            </div>
-        </div>
-    </div>
-);
 
-export default ListeClients;
+                <div className="bg-white shadow-lg rounded-lg overflow-auto max-h-[75vh]">
+                    <table className="min-w-full text-gray-800">
+                        <thead className="">
+                        <tr className="sticky top-0 bg-gray-200">
+                            <th className="py-4 px-6 text-left">Image</th>
+                            <th className="py-4 px-6 text-left">Nom</th>
+                            <th className="py-4 px-6 text-left">Prénom</th>
+                            <th className="py-4 px-6 text-left">Statut</th>
+                            <th className="py-4 px-6 text-left">Prix</th>
+                            <th className="py-4 px-6 text-left">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {filteredClients.map((client) => (
+                            <ClientRow
+                                key={client.id}
+                                client={client}
+                                onView={handleView}
+                                onDownload={handleDownload}
+                                onDelete={handleDelete}
+                                onEdit={handleEdit}
+                                onSend={handleSend}
+                            />
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+
+            </motion.main>
+        </div>
+    );
+};
+
+export default ClientList;

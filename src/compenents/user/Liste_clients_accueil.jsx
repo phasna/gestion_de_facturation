@@ -167,7 +167,7 @@ const ProjectCard = ({ project, onDelete }) => {
 
 const ProjectList = () => {
     const [searchTerm, setSearchTerm] = useState("");
-    const [visibleProjects, setVisibleProjects] = useState(7);
+    const [visibleProjects, setVisibleProjects] = useState(5);
     const [projectData, setProjectData] = useState(projects); // Utilisez les données importées
 
     const handleDeleteProject = (projectId) => {
@@ -186,15 +186,15 @@ const ProjectList = () => {
     return (
         <div className="p-4">
             <h1 className="text-3xl font-semibold my-10 text-center">Liste des Projets</h1>
-            <div className="mb-8 flex justify-end items-center space-x-4 mr-5">
-                <IoSearchOutline className="text-gray-500 w-6 h-6" />
-                <input
-                    type="text"
-                    placeholder="Rechercher des projets..."
-                    className="border border-gray-300 rounded px-3 py-2 placeholder-gray-500 text-gray-900"
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
+            {/*<div className="mb-8 flex justify-end items-center space-x-4 mr-5">*/}
+            {/*    <IoSearchOutline className="text-gray-500 w-6 h-6" />*/}
+            {/*    <input*/}
+            {/*        type="text"*/}
+            {/*        placeholder="Rechercher des projets..."*/}
+            {/*        className="border border-gray-300 rounded px-3 py-2 placeholder-gray-500 text-gray-900"*/}
+            {/*        onChange={(e) => setSearchTerm(e.target.value)}*/}
+            {/*    />*/}
+            {/*</div>*/}
 
             {/* Conteneur avec overflow-auto */}
             <div className="max-h-[80vh] overflow-auto">
@@ -208,11 +208,13 @@ const ProjectList = () => {
             </div>
 
             {visibleProjects < filteredProjects.length && (
-                <div className="flex justify-center mt-4">
-                    <button onClick={handleSeeMore} className="text-white bg-black hover:bg-opacity-80 py-3 px-7 w-1/5 rounded-xl">
-                        Voir plus projets
-                    </button>
-                </div>
+                <Link to="/liste_projets">
+                    <div className="flex justify-center mt-4">
+                        <button onClick={handleSeeMore} className="text-white bg-black hover:bg-opacity-80 py-3 px-7 w-1/5 rounded-xl">
+                            Voir plus clients
+                        </button>
+                    </div>
+                </Link>
             )}
         </div>
     );

@@ -9,13 +9,19 @@ const FacturationForm = () => {
     return (
         <motion.div
             onClick={() => setIsOpen(!isOpen)}
-            initial={{opacity: 0, scale: 0.8}}
-            animate={{opacity: 1, scale: 1}}
-            transition={{duration: 0.5}}
-            className="max-w-full h-screen mx-auto p-6 ">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Crée nouveau client</h2>
+            className="max-w-full h-screen mx-auto p-10 min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
 
-            <form className="space-y-6">
+            <motion.h2
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
+                className="text-4xl text-white font-semibold mb-6 text-center">Crée nouveau client</motion.h2>
+
+            <motion.form
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
+                className="space-y-6 bg-white p-10 rounded-lg shadow-lg ">
                 {/* Coordonnées */}
                 <div className={"flex flex-row space-x-3 "}>
                     <div className={"w-full"}>
@@ -43,14 +49,15 @@ const FacturationForm = () => {
                     </div>
                 </div>
 
-                <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Numéro Siret</label>
+                <div className={"w-full"}>
+                    <label htmlFor="Siret_du_client" className="block text-sm font-medium text-gray-700">Siret du client</label>
                     <input
-                        type="num"
-                        id="Siret"
-                        name="Siret"
+                        type="Siret "
+                        id="Siret "
+                        name="Siret du client"
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="Numéro siret du client"
+                        placeholder="Siret du client "
+                        required
                     />
                 </div>
 
@@ -120,14 +127,15 @@ const FacturationForm = () => {
 
                     <button
                         type="submit"
-                        className="w-1/5 mt-6 px-4 py-2 bg-black text-white font-semibold rounded-md shadow-sm hover:bg-opacity-65 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="w-1/5 mt-6 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
                         Envoyer
                     </button>
                 </div>
-            </form>
+            </motion.form>
         </motion.div>
-    );
+    )
+        ;
 };
 
 export default FacturationForm;
