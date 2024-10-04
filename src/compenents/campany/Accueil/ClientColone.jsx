@@ -12,11 +12,11 @@ const StockedBoxes = () => {
     const colors = ['bg-red-200', 'bg-blue-200', 'bg-green-200', 'bg-yellow-200', 'bg-purple-200'];
 
     return (
-        <div className="p-10 w-full bg-gray-100 rounded-lg">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">Gestion des Boîtes Stockées</h1>
+        <div className="p-10 w-full rounded-b-lg">
+            <h1 className="text-3xl font-bold text-white mb-6">Gestion des Boîtes Stockées</h1>
 
             {/* Grille de cartes */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 p-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {users.map((user, index) => (
                     <div
                         key={user.id}
@@ -24,7 +24,7 @@ const StockedBoxes = () => {
                     >
                         {/* Header avec icône et nom */}
                         <div className="flex items-center mb-4">
-                            <CgProfile className="text-green-500 text-2xl mr-3" /> {/* Icône Boîte */}
+                            <CgProfile className="text-black text-2xl mr-3" /> {/* Icône Boîte */}
                             <h2 className="text-xl font-bold text-gray-800">
                                 {user.prenom} {user.nom}
                             </h2>

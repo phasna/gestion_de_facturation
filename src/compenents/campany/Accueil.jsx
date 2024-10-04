@@ -7,10 +7,12 @@ const Accueil = () => {
         <div className={"p-10 min-h-screen bg-gradient-to-r from-blue-500 to-purple-600"}>
             <h1 className={"text-white text-center text-4xl mb-6 font-bold"}>Gestion des facturation</h1>
             <AccueilImage/>
-            <div className={"flex flex-row space-x-5 mt-5"}>
             <User />
             <Client />
-            </div>
+
+            {/*<div className={"flex flex-row space-x-5 mt-5"}>*/}
+
+            {/*</div>*/}
         </div>
     )
 }
