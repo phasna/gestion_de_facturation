@@ -9,7 +9,7 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     return (
-        <header className="relative flex justify-between items-center bg-black lg:px-12 px-0 ">
+        <header className="relative flex justify-between items-center bg-black lg:px-12 px-0 h-[100px] ">
             <Link to="/Accueil" className="lg:w-1/5 sm:w-1/2 md:w-1/4 hover:text-blue-700">
 
                 {/* Logo à gauche */}

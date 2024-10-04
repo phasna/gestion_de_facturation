@@ -23,7 +23,7 @@ const Menu = () => {
     };
 
     return (
-        <div className="w-1/4 p-4 bg-gray-200 lg:block hidden h-screen overflow-auto">
+        <div className="w-1/4 p-4 bg-gray-200 lg:block hidden h-[calc(100vh_-_100px)] overflow-auto">
             <ul className="space-y-4">
                 <Link to="/devis" className="w-full">
                     <button

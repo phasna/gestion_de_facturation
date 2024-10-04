@@ -9,7 +9,7 @@ function Layout() {
             <div className="flex">
 
                 <Admin/>
-                <div className="w-full">
+                <div className="w-full h-[calc(100vh_-_100px)] overscroll-y-none overflow-y-scroll">
                     <Outlet/>
                 </div>
 
