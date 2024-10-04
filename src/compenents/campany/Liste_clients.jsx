@@ -320,7 +320,7 @@ const ClientList = () => {
                     </Link>
                 </div>
 
-                <div className="bg-white shadow-lg rounded-lg overflow-auto max-h-[75vh]">
+                <div className="bg-white shadow-lg rounded-lg overflow-auto max-h-[70vh]">
                     <table className="min-w-full text-gray-800">
                         <thead className="">
                         <tr className="sticky top-0 bg-gray-200">

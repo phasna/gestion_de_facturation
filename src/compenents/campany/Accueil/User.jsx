@@ -60,9 +60,15 @@ const Dashboard = () => {
                 </div>
             </div>
 
+            {/* Ajout du graphique en barres */}
+            <div className="bg-white p-10 rounded-lg shadow-lg">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Performances Mensuelles</h2>
+                <Bar data={barData} options={{ responsive: true }} />
+            </div>
+
             {/* Section avec statistiques détaillées */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="grid grid-cols-1 lg:grid-cols-2 mt-10 gap-8">
+                <div className="bg-white p-10 rounded-lg shadow-lg">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Détail des Performances</h2>
                     <ul className="space-y-4">
                         <li className="flex items-center justify-between">
@@ -82,12 +88,6 @@ const Dashboard = () => {
                             <span className="font-bold text-gray-800">24 heures</span>
                         </li>
                     </ul>
-                </div>
-
-                {/* Ajout du graphique en barres */}
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 className="text-xl font-bold text-gray-800 mb-4">Performances Mensuelles</h2>
-                    <Bar data={barData} options={{ responsive: true }} />
                 </div>
 
                 {/* Graphique en camembert */}
