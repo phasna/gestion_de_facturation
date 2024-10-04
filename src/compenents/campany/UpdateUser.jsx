@@ -51,12 +51,16 @@ const ClientForm = ({ client }) => {
 
     return (
         <motion.form
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
             onSubmit={handleSubmit}
+            initial={{opacity: 0, scale: 0.8}}
+            animate={{opacity: 1, scale: 1}}
+            transition={{duration: 0.5}}
             className="mb-4 p-4  bg-white rounded-lg p-10 ">
-            <h2 className="text-xl font-bold mb-2">Informations du Client</h2>
+            <motion.h2
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
+                className="text-xl font-bold mb-2">Informations du Client</motion.h2>
 
             <label className="block mb-1" htmlFor="name">Nom</label>
             <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
@@ -86,13 +90,23 @@ const ClientForm = ({ client }) => {
                     <input id="entrepriseAddress" type="text" value={entrepriseAddress} onChange={(e) => setEntrepriseAddress(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
                 </div>
             </div>
+
+            <div className={"flex flex-row w-full space-x-5"}>
+                <div className={"flex flex-col w-1/2"}>
             <label className="block mb-1" htmlFor="entreprisePhone">Téléphone de l'Entreprise</label>
             <input id="entreprisePhone" type="text" value={entreprisePhone} onChange={(e) => setEntreprisePhone(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-            <label className="block mb-1" htmlFor="siret">SIRET</label>
+                </div>
+
+                <div className={"flex flex-col w-1/2"}>
+                    <label className="block mb-1" htmlFor="siret">SIRET</label>
             <input id="siret" type="text" value={siret} onChange={(e) => setSiret(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
+            </div>
+            </div>
             <label className="block mb-1" htmlFor="city">Ville</label>
             <input id="city" type="text" value={city} onChange={(e) => setCity(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-            <button type="submit" className="bg-black text-white py-3 px-12 rounded-xl mt-5">
+            <button type="submit"
+                    className="w-1/5 mt-6 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
                 Sauvegarder
             </button>
         </motion.form>
@@ -124,12 +138,17 @@ const App = () => {
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="container mx-auto p-4 min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
-            <h1 className="text-4xl font-bold text-center my-6 text-white">Gestion des Clients</h1>
-            <div className="flex justify-between items-center">
+            className="container mx-auto p-10 min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+            <motion.h1
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
+                className="text-4xl font-bold text-center text-white">Gestion des Clients</motion.h1>
+            <motion.div
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
+                className="flex justify-between items-center">
                 <label htmlFor="clientSelect" className="block text-white">Sélectionnez un Client:</label>
                 <div className="relative w-1/3 mb-5">
                     <input
@@ -143,7 +162,7 @@ const App = () => {
                         <FaSearch/>
                     </div>
                     {searchTerm && (
-                        <ul className="absolute z-10 bg-white border border-gray-300 rounded w-full mt-1 max-h-48 overflow-auto">
+                        <motion.ul className="absolute z-10 bg-white border border-gray-300 rounded w-full mt-1 max-h-48 overflow-auto">
                             {filteredClients.map(client => (
                                 <li
                                     key={client.id}
@@ -156,15 +175,18 @@ const App = () => {
                                     {client.firstName}
                                 </li>
                             ))}
-                        </ul>
+                        </motion.ul>
                     )}
                 </div>
-            </div>
-            <select
+            </motion.div>
+            <motion.select
                 id="clientSelect"
                 value={selectedClientId}
                 onChange={handleSelectChange}
                 className="border p-2 w-full mb-4 rounded-lg"
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
             >
                 <option value="" disabled>Sélectionnez un nom</option>
                 {filteredClients.map(client => ( // Utilisation de la liste filtrée
@@ -173,7 +195,7 @@ const App = () => {
                     </option>
                 ))}
                 <option value="addClient">Ajouter un autre client</option>
-            </select>
+            </motion.select>
             {selectedClientId && <ClientForm client={clients.find(client => client.id === Number(selectedClientId))} />}
             {!selectedClientId && <ClientForm client={null} />}
         </motion.div>

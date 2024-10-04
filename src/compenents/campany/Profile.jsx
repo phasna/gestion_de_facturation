@@ -7,12 +7,17 @@ const Profile = () => {
     return (
         <motion.div
             onClick={() => setIsOpen(!isOpen)}
-            initial={{opacity: 0, scale: 0.8}}
-            animate={{opacity: 1, scale: 1}}
-            transition={{duration: 0.5}}
-            className="max-w-full mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
-            <h1 className="text-3xl font-bold mb-6 text-center">Profil de l'utilisateur</h1>
-            <div className="space-y-4">
+            className="max-w-full mx-auto p-10 bg-white min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+            <motion.h1
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-4xl text-white font-bold mb-6 text-center">Profil de l'utilisateur</motion.h1>
+            <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-4 bg-white p-10 rounded-lg shadow-lg ">
                 {/* Nom */}
                 <div className="flex flex-col">
                     <label className="text-gray-600">Nom :</label>
@@ -108,7 +113,7 @@ const Profile = () => {
                         Annuler
                     </button>
                 </div>
-            </div>
+            </motion.div>
         </motion.div>
     );
 };

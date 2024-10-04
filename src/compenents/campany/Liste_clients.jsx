@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable'; // Importer le module autotable
 import { clients } from "../ClientData/ClientsData.jsx"; // Import des données des clients
 import logo from '../../assets/img/logo_1.png'; // Assurez-vous que le chemin est correct
+import { Link } from "react-router-dom";
 
 // Composant pour chaque ligne de client
 const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => {
@@ -289,13 +290,21 @@ const ClientList = () => {
     return (
         <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
             <header className="bg-blue-700 py-6">
-                <h1 className="text-center text-4xl font-bold">Gestion des Clients</h1>
+                <motion.h1
+                    initial={{opacity: 0, scale: 0.8}}
+                    animate={{opacity: 1, scale: 1}}
+                    transition={{duration: 0.5}}
+                    className="text-center text-4xl font-bold">Gestion des Clients</motion.h1>
             </header>
 
-            <main className="container mx-auto py-12 px-6">
+            <motion.main
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
+                className="container mx-auto p-10">
                 <div className="mb-8 flex justify-between items-center">
                     <div className="relative w-1/2">
-                        <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                        <FaSearch className="absolute left-3 top-3 text-gray-400"/>
                         <input
                             type="text"
                             placeholder="Rechercher des clients..."
@@ -303,15 +312,18 @@ const ClientList = () => {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md flex items-center">
-                        <FaPlus className="mr-2" /> Ajouter un client
+                    <Link to={"/add_client"}>
+                    <button
+                        className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md flex items-center">
+                        <FaPlus className="mr-2"/> Ajouter un client
                     </button>
+                    </Link>
                 </div>
 
-                <div className="bg-white shadow-lg rounded-lg overflow-auto max-h-[70vh] ">
+                <div className="bg-white shadow-lg rounded-lg overflow-auto max-h-[75vh]">
                     <table className="min-w-full text-gray-800">
-                        <thead>
-                        <tr className="bg-gray-200">
+                        <thead className="">
+                        <tr className="sticky top-0 bg-gray-200">
                             <th className="py-4 px-6 text-left">Image</th>
                             <th className="py-4 px-6 text-left">Nom</th>
                             <th className="py-4 px-6 text-left">Prénom</th>
@@ -335,7 +347,8 @@ const ClientList = () => {
                         </tbody>
                     </table>
                 </div>
-            </main>
+
+            </motion.main>
         </div>
     );
 };

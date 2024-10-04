@@ -54,14 +54,19 @@ const AddFacturation = () => {
 
     return (
         <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="container mx-auto max-w-full p-8 bg-white min-h-screen bg-gradient-to-r from-blue-500 to-purple-600"
+            className="container mx-auto max-w-full p-10 bg-white min-h-screen bg-gradient-to-r from-blue-500 to-purple-600"
         >
-            <h2 className="text-4xl font-bold text-center mb-10 text-white">Créer un devie</h2>
+            <motion.h2
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="text-4xl font-bold text-center mb-10 text-white">Créer un devie</motion.h2>
 
-            <form className="space-y-8 bg-white p-10 rounded-lg shadow-lg ">
+            <motion.form
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="space-y-8 bg-white p-10 rounded-lg shadow-lg ">
                 {/* Barre de recherche avec icône */}
                 <div className="relative w-1/3">
                     <input
@@ -193,7 +198,7 @@ const AddFacturation = () => {
                         Annuler
                     </button>
                 </div>
-            </form>
+            </motion.form>
         </motion.div>
     );
 };
