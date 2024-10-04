@@ -19,7 +19,7 @@ const ClientForm = ({ client }) => {
 
     useEffect(() => {
         if (client) {
-            setName(client.name);
+            setName(client.firstName);
             setAddress(client.address);
             setPhone(client.phone);
             setEmail(client.email);
@@ -55,7 +55,7 @@ const ClientForm = ({ client }) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
             onSubmit={handleSubmit}
-            className="mb-4 p-4  bg-white ">
+            className="mb-4 p-4  bg-white rounded-lg p-10 ">
             <h2 className="text-xl font-bold mb-2">Informations du Client</h2>
 
             <label className="block mb-1" htmlFor="name">Nom</label>
@@ -109,7 +109,7 @@ const App = () => {
 
     useEffect(() => {
         setFilteredClients(clients.filter(client =>
-            client.name.toLowerCase().includes(searchTerm.toLowerCase())
+            client.firstName.toLowerCase().includes(searchTerm.toLowerCase())
         ));
     }, [searchTerm, clients]);
 
@@ -127,19 +127,21 @@ const App = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold text-center my-6">Gestion des Clients</h1>
-            <div className="flex justify-between items-center mb-4">
-                <label htmlFor="clientSelect" className="block ">Sélectionnez un Client:</label>
-                <div className="relative w-64">
+            className="container mx-auto p-4 min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+            <h1 className="text-4xl font-bold text-center my-6 text-white">Gestion des Clients</h1>
+            <div className="flex justify-between items-center">
+                <label htmlFor="clientSelect" className="block text-white">Sélectionnez un Client:</label>
+                <div className="relative w-1/3 mb-5">
                     <input
                         type="text"
-                        placeholder="Rechercher..."
-                        value={searchTerm} // Ajout de la valeur
+                        value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)} // Mise à jour de l'état
-                        className="border p-2 pl-10 pr-4 rounded w-full"
+                        placeholder="Rechercher un client..."
+                        className="w-full border-2 bg-white text-gray-800 rounded-full pl-10 pr-4 py-2 focus:outline-none "
                     />
-                    <FaSearch className="absolute left-2 top-2 text-gray-500" />
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        <FaSearch/>
+                    </div>
                     {searchTerm && (
                         <ul className="absolute z-10 bg-white border border-gray-300 rounded w-full mt-1 max-h-48 overflow-auto">
                             {filteredClients.map(client => (
@@ -147,11 +149,11 @@ const App = () => {
                                     key={client.id}
                                     onClick={() => {
                                         setSelectedClientId(client.id);
-                                        setSearchTerm(client.name);
+                                        setSearchTerm(client.firstName);
                                     }}
                                     className="cursor-pointer hover:bg-gray-200 p-2"
                                 >
-                                    {client.name}
+                                    {client.firstName}
                                 </li>
                             ))}
                         </ul>
@@ -167,7 +169,7 @@ const App = () => {
                 <option value="" disabled>Sélectionnez un nom</option>
                 {filteredClients.map(client => ( // Utilisation de la liste filtrée
                     <option key={client.id} value={client.id}>
-                        {client.name}
+                        {client.firstName}
                     </option>
                 ))}
                 <option value="addClient">Ajouter un autre client</option>

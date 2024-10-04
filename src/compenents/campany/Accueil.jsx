@@ -118,7 +118,7 @@ function Dashboard() {
                     </div>
                 </div>
                 <div className="space-y-5">
-                <ListeClients />
+                {/*<ListeClients />*/}
                 </div>
 
             </div>

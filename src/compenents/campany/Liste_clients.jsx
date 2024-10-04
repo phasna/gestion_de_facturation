@@ -1,16 +1,104 @@
 import React, { useState } from 'react';
-import { FaDownload, FaEye, FaEllipsisV } from 'react-icons/fa';
+import { FaDownload, FaEye, FaEllipsisV, FaSearch, FaPlus } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import 'jspdf-autotable'; // Importer le module autotable
 import { clients } from "../ClientData/ClientsData.jsx"; // Import des données des clients
+import logo from '../../assets/img/logo_1.png'; // Assurez-vous que le chemin est correct
 
+// Composant pour chaque ligne de client
 const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => {
     const [showActions, setShowActions] = useState(false);
 
     const toggleActions = () => {
         setShowActions(!showActions);
     };
+
+    const handleDownload = (client) => {
+        const doc = new jsPDF();
+
+        // Ajout du logo
+        doc.addImage(logo, 'PNG', 10, 0, 50, 50); // Position et taille du logo
+
+        // Informations de l'entreprise
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text("Entreprise : Dpdev", 10, 50);
+        doc.text("Adresse : 12 allée des peupliers, 69001 Lyon", 10, 60);
+        doc.text("Téléphone : 06 44 76 82 34", 10, 70);
+        doc.text("Email : contact@entreprise.com", 10, 80);
+
+        // Détails du client
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("Détails du Client", 140, 50);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Nom : ${client.firstName}`, 140, 60);
+        doc.text(`Prénom : ${client.lastName}`, 140, 70);
+        doc.text(`Adresse : ${client.address}`, 140, 80);
+        doc.text(`Téléphone : ${client.phone}`, 140, 90);
+        doc.text(`Email : ${client.email}`, 140, 100);
+
+        // Détails des prestations
+        const services = [
+            { name: "Développement Web", description: "Création et maintenance de sites web", quantity: 2, priceHT: 600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+        ];
+
+        // Création du tableau
+        doc.autoTable({
+            head: [['Prestation', 'Description', 'Quantité', 'Prix Unitaire HT (€)', 'Total HT (€)']],
+            body: services.map(service => [
+                service.name,
+                service.description,
+                service.quantity,
+                service.priceHT.toFixed(2),
+                (service.priceHT * service.quantity).toFixed(2)
+            ]),
+            startY: 110,
+            theme: 'striped',
+            styles: {
+                fontSize: 10,
+                cellPadding: 2,
+                overflow: 'linebreak',
+                columnWidth: 'auto',
+            },
+            headStyles: {
+                fillColor: [22, 160, 133], // Couleur d'arrière-plan de l'en-tête
+                textColor: [255, 255, 255], // Couleur du texte de l'en-tête
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245], // Couleur des lignes paires
+            }
+        });
+
+        // Calcul des totaux
+        const totalHT = services.reduce((acc, service) => acc + (service.priceHT * service.quantity), 0);
+        const totalTTC = totalHT * 1.2; // Exemple d'une TVA de 20%
+
+        // Affichage des totaux
+        const finalY = doc.autoTable.previous.finalY; // Position du bas du tableau
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Total HT : ${totalHT.toFixed(2)} €`, 10, finalY + 10);
+        doc.text(`Total TTC : ${totalTTC.toFixed(2)} €`, 10, finalY + 20);
+
+        // Ligne de séparation
+        doc.line(10, finalY + 25, 200, finalY + 25);
+
+        // Message de remerciement
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("Merci pour votre confiance!", 10, finalY + 30);
+
+        // Télécharger le fichier
+        doc.save(`facture_${client.firstName}_${client.lastName}.pdf`);
+    };
+
+
+
 
     const getStatusClass = (status) => {
         switch (status) {
@@ -19,7 +107,7 @@ const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => 
             case 'en attente':
                 return 'bg-red-100 text-red-700';
             default:
-                return 'bg-gray-100 text-gray-700';
+                return 'bg-gray-100 text-gray-700'; // Couleur par défaut
         }
     };
 
@@ -28,34 +116,35 @@ const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="bg-white shadow-md rounded-lg hover:shadow-lg transition duration-300"
+            className="bg-gray-50 hover:bg-gray-100 transition duration-300"
         >
-            <td className="py-4 px-6">
-                <img src={client.img} alt={client.firstName} className="w-10 h-10 rounded-full border-2 border-gray-200" />
+            <td className="py-0 px-6">
+                <img src={client.img} alt={client.firstName} className="w-20 h-20 rounded-full" />
             </td>
-            <td className="py-4 px-6 text-gray-800">{client.firstName}</td>
-            <td className="py-4 px-6 text-gray-800">{client.lastName}</td>
+            <td className="py-4 px-6">{client.firstName}</td>
+            <td className="py-4 px-6">{client.lastName}</td>
             <td className="py-4 px-6">
-                <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusClass(client.status)}`}>
+                <span className={`px-2 py-1 rounded-full text-xs ${getStatusClass(client.status)}`}>
                     {client.status}
                 </span>
             </td>
-            <td className="py-4 px-6 text-gray-800">{client.price} €</td>
+            <td className="py-4 px-6">{client.price} €</td>
             <td className="py-4 px-6 text-center">
-                <div className="flex justify-center space-x-4">
+                <div className="flex justify-center space-x-3">
                     <FaEye
-                        className="text-blue-500 cursor-pointer hover:text-blue-700 transition duration-200"
+                        className="text-blue-500 cursor-pointer"
                         title="Visualiser"
                         onClick={() => onView(client)}
                     />
                     <FaDownload
-                        className="text-green-500 cursor-pointer hover:text-green-700 transition duration-200"
+                        className="text-green-500 cursor-pointer"
                         title="Télécharger"
-                        onClick={() => onDownload(client)} // Gère le téléchargement
+                        onClick={() => handleDownload(client)}
                     />
+
                     <div className="relative">
                         <FaEllipsisV
-                            className="text-gray-500 cursor-pointer hover:text-gray-700 transition duration-200"
+                            className="text-gray-500 cursor-pointer"
                             title="Options"
                             onClick={toggleActions}
                         />
@@ -88,6 +177,7 @@ const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => 
     );
 };
 
+// Composant principal pour la liste des clients
 const ClientList = () => {
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -96,54 +186,92 @@ const ClientList = () => {
         client.lastName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const generatePDFContent = (client) => {
+    const handleView = (client) => {
         const doc = new jsPDF();
-        doc.setFontSize(20);
-        doc.text("Nom de l'Entreprise", 10, 10);
-        doc.setFontSize(12);
-        doc.text("Adresse de l'Entreprise", 10, 20);
-        doc.text("Téléphone: 123-456-7890", 10, 30);
-        doc.text("Email: contact@entreprise.com", 10, 40);
-        doc.text("-------------------------------", 10, 50);
 
-        doc.setFontSize(16);
-        doc.text("Détails du Client", 10, 60);
-        doc.setFontSize(12);
-        doc.text(`Nom: ${client.firstName}`, 10, 70);
-        doc.text(`Prénom: ${client.lastName}`, 10, 80);
-        doc.text(`Statut de Facture: ${client.status}`, 10, 90);
-        doc.text(`Prix: ${client.price} €`, 10, 100);
-        doc.text("-------------------------------", 10, 110);
+        // Ajout du logo
+        doc.addImage(logo, 'PNG', 10, 0, 50, 50); // Position et taille du logo
 
+        // Informations de l'entreprise
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.text("Entreprise : Dpdev", 10, 50);
+        doc.text("Adresse : 12 allée des peupliers, 69001 Lyon", 10, 60);
+        doc.text("Téléphone : 06 44 76 82 34", 10, 70);
+        doc.text("Email : contact@entreprise.com", 10, 80);
+
+        // Détails du client
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("Détails du Client", 140, 50);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Nom : ${client.firstName}`, 140, 60);
+        doc.text(`Prénom : ${client.lastName}`, 140, 70);
+        doc.text(`Adresse : ${client.address}`, 140, 80);
+        doc.text(`Téléphone : ${client.phone}`, 140, 90);
+        doc.text(`Email : ${client.email}`, 140, 100);
+
+        // Détails des prestations
         const services = [
-            { name: "Prestation 1", quantity: 2, priceHT: 50, priceTTC: 60 },
-            { name: "Prestation 2", quantity: 1, priceHT: 30, priceTTC: 36 },
+            { name: "Développement Web", description: "Création et maintenance de sites web", quantity: 2, priceHT: 600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
+            { name: "Consultation", description: "Consultation en développement", quantity: 1, priceHT: 3600 },
         ];
 
+        // Création du tableau
         doc.autoTable({
-            head: [['Prestation', 'Quantité', 'Prix HT (€)', 'Prix TTC (€)']],
-            body: services.map(service => [service.name, service.quantity, service.priceHT, service.priceTTC]),
-            startY: 120,
-            theme: 'grid',
+            head: [['Prestation', 'Description', 'Quantité', 'Prix Unitaire HT (€)', 'Total HT (€)']],
+            body: services.map(service => [
+                service.name,
+                service.description,
+                service.quantity,
+                service.priceHT.toFixed(2),
+                (service.priceHT * service.quantity).toFixed(2)
+            ]),
+            startY: 110,
+            theme: 'striped',
+            styles: {
+                fontSize: 10,
+                cellPadding: 2,
+                overflow: 'linebreak',
+                columnWidth: 'auto',
+            },
+            headStyles: {
+                fillColor: [22, 160, 133], // Couleur d'arrière-plan de l'en-tête
+                textColor: [255, 255, 255], // Couleur du texte de l'en-tête
+            },
+            alternateRowStyles: {
+                fillColor: [245, 245, 245], // Couleur des lignes paires
+            }
         });
 
-        const totalHT = services.reduce((acc, service) => acc + service.priceHT * service.quantity, 0);
-        const totalTTC = services.reduce((acc, service) => acc + service.priceTTC * service.quantity, 0);
+        // Calcul des totaux
+        const totalHT = services.reduce((acc, service) => acc + (service.priceHT * service.quantity), 0);
+        const totalTTC = totalHT * 1.2; // Exemple d'une TVA de 20%
 
-        doc.text(`Total HT: ${totalHT} €`, 10, doc.autoTable.previous.finalY + 10);
-        doc.text(`Total TTC: ${totalTTC} €`, 10, doc.autoTable.previous.finalY + 20);
+        // Affichage des totaux
+        const finalY = doc.autoTable.previous.finalY; // Position du bas du tableau
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text(`Total HT : ${totalHT.toFixed(2)} €`, 10, finalY + 10);
+        doc.text(`Total TTC : ${totalTTC.toFixed(2)} €`, 10, finalY + 20);
 
-        return doc;
-    };
+        // Ligne de séparation
+        doc.line(10, finalY + 25, 200, finalY + 25);
 
-    const handleView = (client) => {
-        const doc = generatePDFContent(client);
-        window.open(doc.output('bloburl'), '_blank'); // Visualiser le PDF
+        // Message de remerciement
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("Merci pour votre confiance!", 10, finalY + 30);
+
+        window.open(doc.output('bloburl'), '_blank');
     };
 
     const handleDownload = (client) => {
-        const doc = generatePDFContent(client);
-        doc.save(`facture_${client.firstName}_${client.lastName}.pdf`); // Télécharger le PDF
+        const doc = new jsPDF();
+        alert(`Téléchargement de la facture pour ${client.firstName} ${client.lastName}`);
+        doc.save(`facture_${client.firstName}_${client.lastName}.pdf`);
     };
 
     const handleDelete = (client) => {
@@ -159,43 +287,55 @@ const ClientList = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 text-gray-800"> {/* Couleur de fond de la page */}
-            <header className="bg-blue-600 py-6 shadow-lg">
-                <h1 className="text-center text-4xl font-bold text-white">Gestion des Clients</h1>
+        <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+            <header className="bg-blue-700 py-6">
+                <h1 className="text-center text-4xl font-bold">Gestion des Clients</h1>
             </header>
-            <div className="max-w-4xl mx-auto p-6">
-                <input
-                    type="text"
-                    placeholder="Rechercher un client..."
-                    className="p-3 my-4 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <table className="min-w-full divide-y divide-gray-300">
-                    <thead className="bg-gray-50">
-                    <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prénom</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                    {filteredClients.map((client) => (
-                        <ClientRow
-                            key={client.id}
-                            client={client}
-                            onView={handleView}
-                            onDownload={handleDownload}
-                            onDelete={handleDelete}
-                            onEdit={handleEdit}
-                            onSend={handleSend}
+
+            <main className="container mx-auto py-12 px-6">
+                <div className="mb-8 flex justify-between items-center">
+                    <div className="relative w-1/2">
+                        <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                        <input
+                            type="text"
+                            placeholder="Rechercher des clients..."
+                            className="w-full bg-white text-gray-800 rounded-full pl-10 pr-4 py-2 focus:outline-none shadow-md"
+                            onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+                    </div>
+                    <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md flex items-center">
+                        <FaPlus className="mr-2" /> Ajouter un client
+                    </button>
+                </div>
+
+                <div className="bg-white shadow-lg rounded-lg overflow-auto max-h-[70vh] ">
+                    <table className="min-w-full text-gray-800">
+                        <thead>
+                        <tr className="bg-gray-200">
+                            <th className="py-4 px-6 text-left">Image</th>
+                            <th className="py-4 px-6 text-left">Nom</th>
+                            <th className="py-4 px-6 text-left">Prénom</th>
+                            <th className="py-4 px-6 text-left">Statut</th>
+                            <th className="py-4 px-6 text-left">Prix</th>
+                            <th className="py-4 px-6 text-left">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {filteredClients.map((client) => (
+                            <ClientRow
+                                key={client.id}
+                                client={client}
+                                onView={handleView}
+                                onDownload={handleDownload}
+                                onDelete={handleDelete}
+                                onEdit={handleEdit}
+                                onSend={handleSend}
+                            />
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            </main>
         </div>
     );
 };
