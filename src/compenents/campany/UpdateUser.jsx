@@ -183,7 +183,7 @@ const App = () => {
                 id="clientSelect"
                 value={selectedClientId}
                 onChange={handleSelectChange}
-                className="border p-2 w-full mb-4 rounded-lg"
+                className="border px-5 py-3 w-1/3 mb-4 rounded-full  "
                 initial={{opacity: 0, scale: 0.8}}
                 animate={{opacity: 1, scale: 1}}
                 transition={{duration: 0.5}}
