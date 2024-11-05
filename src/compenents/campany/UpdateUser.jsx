@@ -193,7 +193,7 @@ const App = () => {
                     <option key={client.id} value={client.id}>
                         {client.firstName}
                     </option>
-                ))}
+                ))}≤
                 <option value="addClient">Ajouter un autre client</option>
             </motion.select>
             {selectedClientId && <ClientForm client={clients.find(client => client.id === Number(selectedClientId))} />}

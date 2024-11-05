@@ -6,7 +6,6 @@ const Accueil = () => {
     return (
         <div className={"p-10 min-h-screen bg-gradient-to-r from-blue-500 to-purple-600"}>
             <h1 className={"text-white text-center text-4xl mb-6 font-bold"}>Gestion des facturation</h1>
-            <AccueilImage/>
             <User />
             <Client />
 
