@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
 import { FaDownload, FaEye, FaEllipsisV, FaSearch, FaPlus } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // Importer le module autotable
-import logo from '../../assets/img/logo_1.png'; // Assurez-vous que le chemin est correct
-import { Link } from "react-router-dom";
-import PropTypes from 'prop-types'; // Import pour la validation des props
+import { Link, useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 
-const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => {
+const ClientRow = ({ client, onView, onDownload, onDelete, onEdit }) => {
     const [showActions, setShowActions] = useState(false);
 
     const toggleActions = () => setShowActions(!showActions);
@@ -21,7 +18,7 @@ const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => 
             className="bg-gray-50 hover:bg-gray-100 transition duration-300"
         >
             <td className="py-4 px-6">
-                <img src={client.img} alt={client.nom} className="w-16 h-16 rounded-full" />
+                <img src={client.img || '/default-avatar.png'} alt={client.nom} className="w-16 h-16 rounded-full" />
             </td>
             <td className="py-4 px-6">{client.nom}</td>
             <td className="py-4 px-6">{client.prenom}</td>
@@ -59,12 +56,6 @@ const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onSend }) => 
                                 >
                                     Modifier
                                 </button>
-                                <button
-                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    onClick={() => onSend(client)}
-                                >
-                                    Envoyer
-                                </button>
                             </div>
                         )}
                     </div>
@@ -87,12 +78,12 @@ ClientRow.propTypes = {
     onDownload: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
-    onSend: PropTypes.func.isRequired,
 };
 
 const ClientList = () => {
     const [clients, setClients] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchClients = async () => {
@@ -111,20 +102,47 @@ const ClientList = () => {
         client.prenom.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleView = client => alert(`Visualiser le client : ${client.nom}`);
-    const handleDownload = client => alert(`Téléchargement du PDF pour : ${client.nom}`);
-    const handleDelete = client => alert(`Supprimer le client : ${client.nom}`);
-    const handleEdit = client => alert(`Modifier le client : ${client.nom}`);
-    const handleSend = client => alert(`Envoyer une facture à : ${client.nom}`);
+    const handleDelete = async client => {
+        if (window.confirm(`Voulez-vous vraiment supprimer ${client.nom} ?`)) {
+            try {
+                await axios.delete(`http://127.0.0.1:8000/api/clients/${client.id}/`);
+                setClients(clients.filter(c => c.id !== client.id));
+            } catch (error) {
+                console.error('Erreur lors de la suppression du client :', error);
+            }
+        }
+    };
+
+    const handleEdit = client => {
+        navigate(`/edit_client/${client.id}`);
+    };
+
+    const handleView = client => {
+        alert(`Visualiser le client : ${client.nom}`);
+    };
+
+    const handleDownload = client => {
+        alert(`Téléchargement du PDF pour : ${client.nom}`);
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
             <header className="bg-blue-700 py-6">
-                <motion.h1 initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="text-center text-4xl font-bold">
+                <motion.h1
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center text-4xl font-bold"
+                >
                     Gestion des Clients
                 </motion.h1>
             </header>
-            <motion.main initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="container mx-auto p-10">
+            <motion.main
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="container mx-auto p-10"
+            >
                 <div className="mb-8 flex justify-between items-center">
                     <div className="relative w-1/2">
                         <FaSearch className="absolute left-3 top-3 text-gray-400" />
@@ -162,7 +180,6 @@ const ClientList = () => {
                                     onDownload={handleDownload}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
-                                    onSend={handleSend}
                                 />
                             ))}
                         </tbody>
