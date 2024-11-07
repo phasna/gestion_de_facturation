@@ -120,7 +120,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'gestion_facturation_db',  # le nom de ta base de données
-        'USER': 'symfony_user',  # ou symfony_user si tu utilises l'utilisateur existant
+        'USER': 'postgres',  # ou symfony_user si tu utilises l'utilisateur existant
         'PASSWORD': 'Lpmdlp123',  # ton mot de passe PostgreSQL
         'HOST': 'localhost',
         'PORT': '5432',

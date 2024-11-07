@@ -5,13 +5,12 @@ from django.db import models
 class ConnectionManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
-            raise ValueError('L\'utilisateur doit avoir une adresse email')
+            raise ValueError("L'utilisateur doit avoir une adresse email")
         if not username:
-            raise ValueError('L\'utilisateur doit avoir un nom d\'utilisateur')
+            raise ValueError("L'utilisateur doit avoir un nom d'utilisateur")
 
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, **extra_fields)
-
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -38,10 +37,6 @@ class Connection(AbstractBaseUser):
     def __str__(self):
         return self.username
 
-    @property
-    def is_staff(self):
-        return self.is_superuser
-
 class Client_infos(models.Model):
     nom = models.CharField(max_length=255)
     prenom = models.CharField(max_length=255)
@@ -51,18 +46,23 @@ class Client_infos(models.Model):
     tel_mobile = models.CharField(max_length=20)
     tel_fixe = models.CharField(max_length=20, blank=True, null=True)
 
-    # Champ rôle : admin ou client (si besoin)
+    # Champs supplémentaires
+    adresse = models.CharField(max_length=255, blank=True, null=True)  # Champ optionnel pour l'adresse
+    code_postal = models.CharField(max_length=10, blank=True, null=True)  # Champ optionnel pour le code postal
+
     ROLE_CHOICES = [
         ('admin', 'Admin'),
         ('client', 'Client'),
     ]
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='client')
-
-    # Nouveau champ pour le poste occupé (optionnel)
-    poste_occuped = models.CharField(max_length=255, blank=True, null=True)
+    poste_occupe = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"{self.nom} {self.prenom} - {self.email}"
+
+    class Meta:
+        verbose_name = "Client"
+        verbose_name_plural = "Clients"
 
 class Facture(models.Model):
     client = models.ForeignKey(Client_infos, on_delete=models.CASCADE, related_name='factures')
@@ -72,36 +72,17 @@ class Facture(models.Model):
     def __str__(self):
         return f"Facture {self.id} - Client: {self.client.nom}"
 
-    def calculer_total(self):
-        prestations = self.prestations.all()
-        total = sum([p.prix * p.quantite for p in prestations])
-        self.total = total
-        self.save()
-        return total
-
-
-    def calculer_total(self):
-        prestations = self.prestations.all()
-        total = sum([p.prix * p.quantite for p in prestations])
-        self.total = total
-        self.save()
-        return total
-
-
 class Document(models.Model):
     nom = models.CharField(max_length=255)
     contenu = models.TextField()
     date_update = models.DateTimeField(auto_now=True)
     client = models.ForeignKey(Client_infos, on_delete=models.CASCADE, related_name='documents')
-    facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name='documents', null=True)
+    facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name='documents', null=True, blank=True)
     type_document = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.nom
-
-
-
 
 class Prestation(models.Model):
     service_nom = models.CharField(max_length=255)
@@ -112,15 +93,12 @@ class Prestation(models.Model):
     def __str__(self):
         return self.service_nom
 
-
 class Service(models.Model):
     client = models.ForeignKey(Client_infos, on_delete=models.CASCADE, related_name='services')
     nombre_produit = models.IntegerField()
 
     def __str__(self):
-        return f'Service pour {self.client.nom}'
-
-
+        return f"Service pour {self.client.nom}"
 
 class PrestationType(models.Model):
     nom = models.CharField(max_length=255)
@@ -130,9 +108,6 @@ class PrestationType(models.Model):
     def __str__(self):
         return self.nom
 
-
-
-# Table Poste pour gérer les postes des utilisateurs ou employés
 class Poste(models.Model):
     nom_poste = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)

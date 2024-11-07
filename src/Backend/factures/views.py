@@ -1,10 +1,13 @@
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+from . import models
 from .models import PrestationType, Client_infos, Poste, Facture, Prestation, Connection
 from django.db.models import Sum
 import json
 from django.contrib.auth import authenticate
+import logging
 
+logger = logging.getLogger(__name__)
 
 def Accueil(request):
     return HttpResponse("<h1>Bienvenue sur la page d'accueil</h1>")
@@ -15,28 +18,37 @@ def register_user(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            nom = data.get('nom')
-            prenom = data.get('prenom')
-            email = data.get('email')
-            username = data.get('username')
-            password = data.get('password')
-            siret = data.get('siret')
-            ville = data.get('ville')
-            tel_mobile = data.get('tel_mobile')
 
-            if not all([nom, prenom, email, username, password]):
-                return JsonResponse({'error': 'Tous les champs sont obligatoires'}, status=400)
+            # Valider les champs requis
+            required_fields = ['nom', 'prenom', 'email', 'username', 'password']
+            for field in required_fields:
+                if not data.get(field):
+                    return JsonResponse({'error': f'Le champ {field} est requis'}, status=400)
 
+            # Créer l'utilisateur
             connection = Connection.objects.create_user(
-                email=email, username=username, password=password, nom=nom,
-                prenom=prenom, siret=siret, ville=ville, tel_mobile=tel_mobile
+                username=data['username'],
+                email=data['email'],
+                password=data['password']
             )
+
+            # Lier les informations du client à l'utilisateur
+            Client_infos.objects.create(
+                nom=data['nom'],
+                prenom=data['prenom'],
+                email=data['email'],
+                tel_mobile=data.get('tel_mobile', ''),
+                ville=data.get('ville', ''),
+                siret=data.get('siret', '')
+            )
+
             return JsonResponse({'success': True, 'user_id': connection.id}, status=201)
 
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Données JSON invalides'}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
 
 
 @csrf_exempt
@@ -116,37 +128,47 @@ def add_prestation(request):
 
 
 @csrf_exempt
-def add_user(request):
+def create_or_add_client(request):
+    logger.info(f"Requête reçue avec méthode : {request.method}")
+
     if request.method == 'POST':
         try:
+            # Lecture des données envoyées
             data = json.loads(request.body)
-            nom = data.get('nom')
-            prenom = data.get('prenom')
-            email = data.get('email')
-            phone = data.get('phone')
-            city = data.get('city')
-            address = data.get('address')
-            role = data.get('role')
-            poste = data.get('poste')
+            logger.info(f"Données reçues : {data}")
 
-            if not all([nom, prenom, email, phone, city, address, role]):
-                return JsonResponse({'error': 'Tous les champs sont obligatoires'}, status=400)
+            # Vérification des champs obligatoires
+            required_fields = ['nom', 'prenom', 'email', 'siret', 'tel_mobile', 'ville']
+            for field in required_fields:
+                if field not in data or not data[field]:
+                    logger.warning(f"Le champ {field} est manquant ou vide.")
+                    return JsonResponse({"error": f"Le champ {field} est obligatoire."}, status=400)
 
+            # Création du client
             client = Client_infos.objects.create(
-                nom=nom,
-                prenom=prenom,
-                email=email,
-                tel_mobile=phone,
-                ville=city,
-                role=role,
-                poste_occuped=poste
+                nom=data['nom'],
+                prenom=data['prenom'],
+                email=data['email'],
+                siret=data['siret'],
+                tel_mobile=data['tel_mobile'],
+                ville=data['ville'],
+                adresse=data.get('adresse', ''),  # Champ optionnel
+                code_postal=data.get('code_postal', '')  # Champ optionnel
             )
-            return JsonResponse({'success': True, 'client_id': client.id}, status=201)
+            logger.info(f"Client créé avec succès : {client}")
+            return JsonResponse({"message": "Client ajouté avec succès", "client_id": client.id}, status=201)
 
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Données JSON invalides'}, status=400)
+        except json.JSONDecodeError as e:
+            logger.error(f"Erreur de parsing JSON : {e}")
+            return JsonResponse({"error": "Données JSON invalides."}, status=400)
 
-    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+        except Exception as e:
+            logger.error(f"Erreur lors de la création du client : {e}")
+            return JsonResponse({"error": str(e)}, status=500)
+
+    logger.warning("Méthode non autorisée utilisée.")
+    return JsonResponse({"error": "Méthode non autorisée"}, status=405)
+
 
 
 def list_postes(request):
@@ -228,19 +250,23 @@ def download_facture(request, facture_id):
     try:
         facture = Facture.objects.get(id=facture_id)
 
-
+        # Préparez la réponse pour un fichier PDF
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="facture_{facture.id}.pdf"'
 
+        # Générer le PDF avec ReportLab
         p = canvas.Canvas(response)
-        p.drawString(100, 750, f"Facture ID: {facture.id}")
-        p.drawString(100, 730, f"Client: {facture.client.nom} {facture.client.prenom}")
-        p.drawString(100, 710, f"Total: {facture.total}")
+        p.drawString(100, 800, f"Facture ID: {facture.id}")
+        p.drawString(100, 780, f"Client: {facture.client.nom} {facture.client.prenom}")
+        p.drawString(100, 760, f"Total: {facture.total} €")
+        p.drawString(100, 740, f"Date: {facture.date_creation.strftime('%d-%m-%Y')}")
 
-
+        # Terminez et sauvegardez le PDF
         p.showPage()
         p.save()
         return response
 
     except Facture.DoesNotExist:
         return JsonResponse({'error': 'Facture introuvable'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
