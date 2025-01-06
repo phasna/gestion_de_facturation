@@ -1,9 +1,16 @@
-
-import ListeClients  from "./Liste_clients_accueil.jsx";
-import { Line, Pie } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
-
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import axios from 'axios';
 
 ChartJS.register(
     CategoryScale,
@@ -12,118 +19,123 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend,
-    ArcElement
+    Legend
 );
 
-const lineData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [
-        {
-            label: 'Chiffre d\'Affaires',
-            data: [3000, 2000, 1500, 2000, 2500, 3000],
-            borderColor: '#3b82f6',
-            backgroundColor: 'rgba(59, 130, 246, 0.2)',
-            fill: true,
-        },
-    ],
-};
+const Dashboard = () => {
+    const [lineData, setLineData] = useState({
+        labels: [],
+        datasets: [
+            {
+                label: 'Chiffre d\'Affaires',
+                data: [],
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                fill: true,
+            },
+        ],
+    });
 
-const lineOptions = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: 'top',
-        },
-        tooltip: {
-            callbacks: {
-                label: function(context) {
-                    return context.dataset.label + ': $' + context.raw;
-                }
-            }
-        }
-    },
-    scales: {
-        x: {
-            title: {
-                display: true,
-                text: 'Mois',
+    const lineOptions = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                callbacks: {
+                    label: (context) => `${context.dataset.label}: €${context.raw}`,
+                },
             },
         },
-        y: {
-            title: {
-                display: true,
-                text: 'Montant',
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Mois',
+                },
             },
-            ticks: {
-                callback: function(value) {
-                    return '$' + value;
-                }
-            }
-        }
-    }
-};
-
-
-
-const pieData = {
-    labels: ['Développement web', 'Design', 'Réseaux'],
-    datasets: [
-        {
-            label: 'Répartition du Chiffre d\'Affaires',
-            data: [40, 30, 30],
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-            borderColor: '#fff',
-            borderWidth: 2,
+            y: {
+                title: {
+                    display: true,
+                    text: 'Montant (€)',
+                },
+                ticks: {
+                    callback: (value) => `€${value}`,
+                },
+            },
         },
-    ],
-};
+    };
 
-const pieOptions = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: 'top',
-        },
-        tooltip: {
-            callbacks: {
-                label: function(context) {
-                    return context.label + ': $' + context.raw;
+    const translateMonth = (month) => {
+        const monthTranslations = {
+            January: 'Janvier',
+            February: 'Février',
+            March: 'Mars',
+            April: 'Avril',
+            May: 'Mai',
+            June: 'Juin',
+            July: 'Juillet',
+            August: 'Août',
+            September: 'Septembre',
+            October: 'Octobre',
+            November: 'Novembre',
+            December: 'Décembre',
+        };
+        return monthTranslations[month] || month;
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Appel de l'API pour récupérer les données
+                const response = await axios.get('http://127.0.0.1:8000/api/chiffre-affaires-par-mois/');
+                const data = response.data;
+
+                if (data && data.length > 0) {
+                    // Préparer les données pour Chart.js
+                    const labels = data.map((entry) => translateMonth(entry.mois));
+                    const values = data.map((entry) => entry.total_chiffre_affaires || 0);
+
+                    setLineData({
+                        labels: labels,
+                        datasets: [
+                            {
+                                ...lineData.datasets[0],
+                                data: values,
+                            },
+                        ],
+                    });
+                } else {
+                    console.warn('Aucune donnée reçue pour le graphique. Vérifiez l\'API.');
                 }
+            } catch (error) {
+                console.error('Erreur lors du chargement des données du graphique :', error);
+
+                // Valeurs par défaut en cas d'erreur API
+                setLineData({
+                    labels: ['Janvier', 'Février', 'Mars'],
+                    datasets: [
+                        {
+                            ...lineData.datasets[0],
+                            data: [0, 0, 0],
+                        },
+                    ],
+                });
             }
-        }
-    }
-};
+        };
 
-
-
-function Dashboard() {
+        fetchData();
+    }, []);
 
     return (
-        <div className="flex  text-xl p-10 ">
-            <div className="flex-1">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-                    <div className="bg-gray-100 p-4 rounded shadow col-span-2">
-                        <h2 className="text-xl font-bold mb-2">Statistiques des revenues</h2>
-                        <div className="w-full">
-                            <Line data={lineData} options={lineOptions} />
-                        </div>
-                    </div>
-
-                    <div className="bg-gray-100 p-4 rounded shadow">
-                        <h2 className="text-xl font-bold mb-2">Répartition du Chiffre d'Affaires</h2>
-                        <div className="w-full">
-                            <Pie data={pieData} options={pieOptions} />
-                        </div>
-                    </div>
-                </div>
-                <div className="space-y-5">
-                    {/*<ListeClients />*/}
-                </div>
-
+        <div className="p-10">
+            <h2 className="text-2xl font-bold mb-4">Graphique des Revenus Mensuels</h2>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <Line data={lineData} options={lineOptions} />
             </div>
         </div>
     );
-}
+};
 
 export default Dashboard;

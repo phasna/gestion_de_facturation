@@ -1,205 +1,201 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { clients as initialClients } from '../ClientData/ClientsData.jsx';
-import { FaSearch } from 'react-icons/fa'; // Assurez-vous d'installer react-icons
-import { motion } from 'framer-motion'; // Import de Framer Motion
+import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { FaSearch } from 'react-icons/fa'; // Conserve les icônes
+import { motion } from 'framer-motion'; // Conserve les animations
 
-// Formulaire pour afficher et modifier les informations d'un client
-const ClientForm = ({ client }) => {
-    const [name, setName] = useState('');
-    const [address, setAddress] = useState('');
-    const [phone, setPhone] = useState('');
-    const [email, setEmail] = useState('');
-    const [detail, setDetail] = useState('');
-    const [entreprise, setEntreprise] = useState('');
-    const [entrepriseAddress, setEntrepriseAddress] = useState('');
-    const [entreprisePhone, setEntreprisePhone] = useState('');
-    const [siret, setSiret] = useState('');
-    const [city, setCity] = useState('');
+const UpdateUser = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { clientId } = location.state || {}; // ID client si navigation depuis Liste_clients.jsx
+    const [clients, setClients] = useState([]); // Liste des clients pour le menu déroulant
+    const [selectedClientId, setSelectedClientId] = useState(clientId || '');
+    const [client, setClient] = useState(null); // Détails du client pour édition
 
+    // Récupère tous les clients pour le menu déroulant
     useEffect(() => {
-        if (client) {
-            setName(client.firstName);
-            setAddress(client.address);
-            setPhone(client.phone);
-            setEmail(client.email);
-            setDetail(client.detail);
-            setEntreprise(client.entreprise);
-            setEntrepriseAddress(client.entreprise_address);
-            setEntreprisePhone(client.entreprise_phone);
-            setSiret(client.siret);
-            setCity(client.city);
-        } else {
-            setName('');
-            setAddress('');
-            setPhone('');
-            setEmail('');
-            setDetail('');
-            setEntreprise('');
-            setEntrepriseAddress('');
-            setEntreprisePhone('');
-            setSiret('');
-            setCity('');
-        }
-    }, [client]);
+        const fetchClients = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/clients/');
+                setClients(response.data);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des clients :', error);
+            }
+        };
+        fetchClients();
+    }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        alert(`Client mis à jour: ${name}, ${phone}, ${email}, ${detail}, ${entreprise}, ${entrepriseAddress}, ${entreprisePhone}, ${siret}, ${city}`);
-        // Ici, vous pouvez ajouter la logique pour sauvegarder les données mises à jour.
+    // Récupère les détails d'un client spécifique si un ID est sélectionné
+    useEffect(() => {
+        if (selectedClientId) {
+            const fetchClient = async () => {
+                try {
+                    const response = await axios.get(`http://127.0.0.1:8000/api/clients/${selectedClientId}/`);
+                    setClient(response.data);
+                } catch (error) {
+                    console.error('Erreur lors de la récupération des données du client :', error);
+                }
+            };
+            fetchClient();
+        }
+    }, [selectedClientId]);
+
+    // Met à jour les informations du client
+    const handleUpdate = async (updatedClient) => {
+        try {
+            await axios.put(
+                `http://127.0.0.1:8000/api/clients/${selectedClientId}/update/`,
+                updatedClient,
+                {
+                    headers: {
+                        'X-CSRFToken': getCsrfToken(), // Facultatif si @csrf_exempt est utilisé
+                    },
+                }
+            );
+            alert('Client mis à jour avec succès !');
+            navigate('/liste_clients'); // Retour à la liste après mise à jour
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour :', error);
+        }
     };
 
-    return (
-        <motion.form
-            onSubmit={handleSubmit}
-            initial={{opacity: 0, scale: 0.8}}
-            animate={{opacity: 1, scale: 1}}
-            transition={{duration: 0.5}}
-            className="mb-4 p-4  bg-white rounded-lg p-10 ">
-            <motion.h2
-                initial={{opacity: 0, scale: 0.8}}
-                animate={{opacity: 1, scale: 1}}
-                transition={{duration: 0.5}}
-                className="text-xl font-bold mb-2">Informations du Client</motion.h2>
-
-            <label className="block mb-1" htmlFor="name">Nom</label>
-            <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-
-            <label className="block mb-1" htmlFor="address">Adresse</label>
-            <input id="address" type="text" value={address} onChange={(e) => setAddress(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-
-            <div className="flex flex-row w-full space-x-5">
-                <div className="flex flex-col w-1/2">
-                    <label className="block mb-1" htmlFor="phone">Téléphone</label>
-                    <input id="phone" type="text" value={phone} onChange={(e) => setPhone(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-                </div>
-                <div className="flex flex-col w-1/2">
-                    <label className="block mb-1" htmlFor="email">Email</label>
-                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-                </div>
-            </div>
-            <label className="block mb-1" htmlFor="detail">Détails</label>
-            <input id="detail" type="text" value={detail} onChange={(e) => setDetail(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-            <div className="flex flex-row w-full space-x-5">
-                <div className="flex flex-col w-1/2">
-                    <label className="block mb-1" htmlFor="entreprise">Entreprise</label>
-                    <input id="entreprise" type="text" value={entreprise} onChange={(e) => setEntreprise(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-                </div>
-                <div className="flex flex-col w-1/2">
-                    <label className="block mb-1" htmlFor="entrepriseAddress">Adresse de l'Entreprise</label>
-                    <input id="entrepriseAddress" type="text" value={entrepriseAddress} onChange={(e) => setEntrepriseAddress(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-                </div>
-            </div>
-
-            <div className={"flex flex-row w-full space-x-5"}>
-                <div className={"flex flex-col w-1/2"}>
-                    <label className="block mb-1" htmlFor="entreprisePhone">Téléphone de l'Entreprise</label>
-                    <input id="entreprisePhone" type="text" value={entreprisePhone} onChange={(e) => setEntreprisePhone(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-                </div>
-
-                <div className={"flex flex-col w-1/2"}>
-                    <label className="block mb-1" htmlFor="siret">SIRET</label>
-                    <input id="siret" type="text" value={siret} onChange={(e) => setSiret(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-                </div>
-            </div>
-            <label className="block mb-1" htmlFor="city">Ville</label>
-            <input id="city" type="text" value={city} onChange={(e) => setCity(e.target.value)} required className="border p-2 w-full mb-2 rounded-lg" />
-            <button type="submit"
-                    className="w-1/5 mt-6 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-                Sauvegarder
-            </button>
-        </motion.form>
-    );
-};
-
-// Composant principal de l'application
-const App = () => {
-    const [clients] = useState(initialClients);
-    const [selectedClientId, setSelectedClientId] = useState("");
-    const [searchTerm, setSearchTerm] = useState(""); // État pour la recherche
-    const [filteredClients, setFilteredClients] = useState([]); // État pour les clients filtrés
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        setFilteredClients(clients.filter(client =>
-            client.firstName.toLowerCase().includes(searchTerm.toLowerCase())
-        ));
-    }, [searchTerm, clients]);
-
-    const handleSelectChange = (e) => {
-        const value = e.target.value;
-        if (value === "addClient") {
-            navigate("/add_client");
-        } else {
-            setSelectedClientId(value);
+    // Supprime un client
+    const handleDelete = async () => {
+        if (window.confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
+            try {
+                await axios.delete(`http://127.0.0.1:8000/api/clients/${selectedClientId}/delete/`, {
+                    headers: {
+                        'X-CSRFToken': getCsrfToken(), // Optionnel si CSRF activé
+                    },
+                });
+                alert('Client supprimé avec succès');
+                navigate('/liste_clients'); // Redirige après suppression
+            } catch (error) {
+                console.error('Erreur lors de la suppression du client :', error);
+            }
         }
+    };
+
+    // Fonction utilitaire pour récupérer le CSRF token
+    const getCsrfToken = () => {
+        const csrfCookie = document.cookie
+            .split('; ')
+            .find((row) => row.startsWith('csrftoken='));
+        return csrfCookie ? csrfCookie.split('=')[1] : '';
     };
 
     return (
         <motion.div
-            className="container mx-auto p-10 min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+            className="container mx-auto p-10 min-h-screen bg-gradient-to-r from-blue-500 to-purple-600"
+        >
             <motion.h1
-                initial={{opacity: 0, scale: 0.8}}
-                animate={{opacity: 1, scale: 1}}
-                transition={{duration: 0.5}}
-                className="text-4xl font-bold text-center text-white">Gestion des Clients</motion.h1>
-            <motion.div
-                initial={{opacity: 0, scale: 0.8}}
-                animate={{opacity: 1, scale: 1}}
-                transition={{duration: 0.5}}
-                className="flex justify-between items-center">
-                <label htmlFor="clientSelect" className="block text-white">Sélectionnez un Client:</label>
-                <div className="relative w-1/3 mb-5">
+                className="text-4xl font-bold text-center text-white"
+            >
+                Gestion des Clients
+            </motion.h1>
+
+            {!selectedClientId && (
+                <div className="mb-5">
+                    <label className="block mb-1 text-white">Sélectionnez un Client:</label>
+                    <div className="relative w-full mb-5">
+                        <FaSearch className="absolute left-3 top-3 text-gray-400" />
+                        <select
+                            value={selectedClientId}
+                            onChange={(e) => setSelectedClientId(e.target.value)}
+                            className="w-full border-2 bg-white text-gray-800 rounded-full pl-10 pr-4 py-2"
+                        >
+                            <option value="">-- Sélectionnez un client --</option>
+                            {clients.map((c) => (
+                                <option key={c.id} value={c.id}>
+                                    {c.nom} {c.prenom}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            )}
+
+            {client && (
+                <motion.form
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-10 bg-white rounded-lg shadow-lg"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleUpdate(client);
+                    }}
+                >
+                    <h2 className="text-xl font-bold mb-4">Modifier les Informations</h2>
+
+                    <label className="block mb-1">Nom</label>
                     <input
                         type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)} // Mise à jour de l'état
-                        placeholder="Rechercher un client..."
-                        className="w-full border-2 bg-white text-gray-800 rounded-full pl-10 pr-4 py-2 focus:outline-none "
+                        value={client.nom}
+                        onChange={(e) => setClient({ ...client, nom: e.target.value })}
+                        className="border p-2 w-full mb-2 rounded-lg"
+                        required
                     />
-                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500">
-                        <FaSearch/>
-                    </div>
-                    {searchTerm && (
-                        <motion.ul className="absolute z-10 bg-white border border-gray-300 rounded w-full mt-1 max-h-48 overflow-auto">
-                            {filteredClients.map(client => (
-                                <li
-                                    key={client.id}
-                                    onClick={() => {
-                                        setSelectedClientId(client.id);
-                                        setSearchTerm(client.firstName);
-                                    }}
-                                    className="cursor-pointer hover:bg-gray-200 p-2"
-                                >
-                                    {client.firstName}
-                                </li>
-                            ))}
-                        </motion.ul>
-                    )}
-                </div>
-            </motion.div>
-            <motion.select
-                id="clientSelect"
-                value={selectedClientId}
-                onChange={handleSelectChange}
-                className="border px-5 py-3 w-1/3 mb-4 rounded-full  "
-                initial={{opacity: 0, scale: 0.8}}
-                animate={{opacity: 1, scale: 1}}
-                transition={{duration: 0.5}}
-            >
-                <option value="" disabled>Sélectionnez un nom</option>
-                {filteredClients.map(client => ( // Utilisation de la liste filtrée
-                    <option key={client.id} value={client.id}>
-                        {client.firstName}
-                    </option>
-                ))}≤
-                <option value="addClient">Ajouter un autre client</option>
-            </motion.select>
-            {selectedClientId && <ClientForm client={clients.find(client => client.id === Number(selectedClientId))} />}
-            {!selectedClientId && <ClientForm client={null} />}
+
+                    <label className="block mb-1">Adresse</label>
+                    <input
+                        type="text"
+                        value={client.adresse}
+                        onChange={(e) => setClient({ ...client, adresse: e.target.value })}
+                        className="border p-2 w-full mb-2 rounded-lg"
+                        required
+                    />
+
+                    <label className="block mb-1">Téléphone</label>
+                    <input
+                        type="text"
+                        value={client.tel_mobile}
+                        onChange={(e) => setClient({ ...client, tel_mobile: e.target.value })}
+                        className="border p-2 w-full mb-2 rounded-lg"
+                        required
+                    />
+
+                    <label className="block mb-1">Email</label>
+                    <input
+                        type="email"
+                        value={client.email}
+                        onChange={(e) => setClient({ ...client, email: e.target.value })}
+                        className="border p-2 w-full mb-2 rounded-lg"
+                        required
+                    />
+
+                    <label className="block mb-1">Ville</label>
+                    <input
+                        type="text"
+                        value={client.ville}
+                        onChange={(e) => setClient({ ...client, ville: e.target.value })}
+                        className="border p-2 w-full mb-2 rounded-lg"
+                        required
+                    />
+
+                    <label className="block mb-1">SIRET</label>
+                    <input
+                        type="text"
+                        value={client.siret}
+                        onChange={(e) => setClient({ ...client, siret: e.target.value })}
+                        className="border p-2 w-full mb-2 rounded-lg"
+                        required
+                    />
+
+                    <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded mr-4">
+                        Sauvegarder
+                    </button>
+
+                    <button
+                        type="button"
+                        className="bg-red-500 text-white py-2 px-4 rounded"
+                        onClick={handleDelete}
+                    >
+                        Supprimer
+                    </button>
+                </motion.form>
+            )}
         </motion.div>
     );
 };
 
-export default App;
+export default UpdateUser;

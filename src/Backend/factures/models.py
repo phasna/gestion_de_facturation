@@ -45,6 +45,7 @@ class Client_infos(models.Model):
     ville = models.CharField(max_length=255)
     tel_mobile = models.CharField(max_length=20)
     tel_fixe = models.CharField(max_length=20, blank=True, null=True)
+    img = models.ImageField(upload_to='clients/', default='default-avatar.png', blank=True)
 
     # Champs supplémentaires
     adresse = models.CharField(max_length=255, blank=True, null=True)  # Champ optionnel pour l'adresse
@@ -65,12 +66,22 @@ class Client_infos(models.Model):
         verbose_name_plural = "Clients"
 
 class Facture(models.Model):
-    client = models.ForeignKey(Client_infos, on_delete=models.CASCADE, related_name='factures')
+    STATUS_CHOICES = [
+        ('draft', 'Brouillon'),
+        ('paid', 'Payée'),
+        ('cancelled', 'Annulée'),
+    ]
+
+    client = models.ForeignKey('Client_infos', on_delete=models.CASCADE, related_name='factures')
     date_creation = models.DateTimeField(auto_now_add=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')  # Nouveau champ pour le statut
 
     def __str__(self):
-        return f"Facture {self.id} - Client: {self.client.nom}"
+        return f"Facture {self.id} - Client: {self.client.nom} - Statut: {self.get_status_display()}"  # Affiche le statut lisible
+
+    class Meta:
+        indexes = [models.Index(fields=['date_creation'])]  # Ajout d'un index sur la date
 
 class Document(models.Model):
     nom = models.CharField(max_length=255)
@@ -88,10 +99,13 @@ class Prestation(models.Model):
     service_nom = models.CharField(max_length=255)
     prix = models.DecimalField(max_digits=10, decimal_places=2)
     quantite = models.IntegerField()
-    facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name='prestations')
+    facture = models.ForeignKey(Facture, on_delete=models.CASCADE, related_name='prestations', null=True, blank=True)
+    devis = models.ForeignKey('Devis', on_delete=models.CASCADE, related_name='prestations', null=True, blank=True)  # Utilisez une chaîne
 
     def __str__(self):
         return self.service_nom
+
+
 
 class Service(models.Model):
     client = models.ForeignKey(Client_infos, on_delete=models.CASCADE, related_name='services')
@@ -114,3 +128,16 @@ class Poste(models.Model):
 
     def __str__(self):
         return self.nom_poste
+
+
+class Devis(models.Model):
+    client = models.ForeignKey(Client_infos, on_delete=models.CASCADE, related_name='devis')
+    date_creation = models.DateTimeField(auto_now_add=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    validé = models.BooleanField(default=False)  # Indique si le devis est validé ou non
+
+    def __str__(self):
+        return f"Devis {self.id} pour {self.client.nom}"
+
+
+

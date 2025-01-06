@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-)oj5-bxqzw(4%i1_^22_=mxckc2z*4-h9r6a$gw!)=r7n8q_^s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Ajoute 'corsheaders' à la liste des applications installées
@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'factures',  # Ton application factures
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework.authtoken',
+    'django_filters',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -53,18 +56,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',  # Si vous utilisez React
-    'http://localhost:5173',  # Si vous utilisez Vite.js ou un autre outil
-    'http://127.0.0.1:8000',  # Adresse de votre backend Django
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:8000',
 ]
-
-
-CORS_ALLOW_CREDENTIALS = True
 
 # Activer certaines méthodes HTTP
 CORS_ALLOW_METHODS = [

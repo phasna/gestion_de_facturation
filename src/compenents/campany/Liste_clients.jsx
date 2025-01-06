@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaDownload, FaEye, FaEllipsisV, FaSearch, FaPlus } from 'react-icons/fa';
+import { FaDownload, FaEye, FaEllipsisV, FaSearch } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from "react-router-dom";
 import PropTypes from 'prop-types';
 
-const ClientRow = ({ client, onView, onDownload, onDelete, onEdit }) => {
+// Composant ClientRow
+const ClientRow = ({ client, onView, onDownload, onDelete, onEdit, onPayDirect }) => {
     const [showActions, setShowActions] = useState(false);
 
     const toggleActions = () => setShowActions(!showActions);
@@ -22,8 +22,20 @@ const ClientRow = ({ client, onView, onDownload, onDelete, onEdit }) => {
             </td>
             <td className="py-4 px-6">{client.nom}</td>
             <td className="py-4 px-6">{client.prenom}</td>
-            <td className="py-4 px-6">{client.status || 'N/A'}</td>
-            <td className="py-4 px-6">{client.price || '—'} €</td>
+            <td className="py-4 px-6">
+                <span
+                    className={`px-2 py-1 rounded-full ${
+                        client.status === 'Payé'
+                            ? 'bg-green-200 text-green-600'
+                            : client.status === 'Non payé'
+                            ? 'bg-orange-200 text-orange-600'
+                            : 'bg-red-200 text-red-600'
+                    }`}
+                >
+                    {client.status || 'Aucun devis ou prestation'}
+                </span>
+            </td>
+            <td className="py-4 px-6">{client.price ? `${client.price} €` : '—'}</td>
             <td className="py-4 px-6 text-center">
                 <div className="flex justify-center items-center space-x-2">
                     <FaEye
@@ -56,6 +68,12 @@ const ClientRow = ({ client, onView, onDownload, onDelete, onEdit }) => {
                                 >
                                     Modifier
                                 </button>
+                                <button
+                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    onClick={() => onPayDirect(client)}
+                                >
+                                    Marquer comme Payé
+                                </button>
                             </div>
                         )}
                     </div>
@@ -78,21 +96,27 @@ ClientRow.propTypes = {
     onDownload: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     onEdit: PropTypes.func.isRequired,
+    onPayDirect: PropTypes.func.isRequired,
 };
 
+// Composant ClientList
 const ClientList = () => {
     const [clients, setClients] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchClients = async () => {
-            try {
-                const response = await axios.get('http://127.0.0.1:8000/api/clients/');
-                setClients(response.data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des clients :', error);
-            }
+      const fetchClients = async () => {
+        try {
+            const response = await axios.get('http://127.0.0.1:8000/api/clients-with-details/');
+            const updatedClients = response.data.map(client => ({
+                ...client,
+                price: Number(client.price) || 0,  // Convertir le prix en nombre
+            }));
+            setClients(updatedClients);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des clients :', error);
+            alert('Impossible de récupérer la liste des clients.');
+        }
         };
         fetchClients();
     }, []);
@@ -102,28 +126,81 @@ const ClientList = () => {
         client.prenom.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleDelete = async client => {
+    const handleDelete = async (client) => {
         if (window.confirm(`Voulez-vous vraiment supprimer ${client.nom} ?`)) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/clients/${client.id}/`);
-                setClients(clients.filter(c => c.id !== client.id));
+                const response = await axios.delete(`http://127.0.0.1:8000/api/clients/${client.id}/`);
+                if (response.status === 204) {
+                    alert('Client supprimé avec succès');
+                    setClients(clients.filter((c) => c.id !== client.id));
+                }
             } catch (error) {
                 console.error('Erreur lors de la suppression du client :', error);
+                alert('Échec de la suppression.');
             }
         }
     };
 
     const handleEdit = client => {
-        navigate(`/edit_client/${client.id}`);
+        // Naviguer vers la page de modification
+        console.log(`Naviguer vers la modification du client ${client.id}`);
     };
 
-    const handleView = client => {
-        alert(`Visualiser le client : ${client.nom}`);
+    const handleView = async (client) => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/factures/${client.factureId}/`);
+            console.log(response.data);
+        } catch (error) {
+            console.error('Erreur lors de la visualisation de la facture :', error);
+            alert('Impossible de visualiser la facture.');
+        }
     };
 
-    const handleDownload = client => {
-        alert(`Téléchargement du PDF pour : ${client.nom}`);
+    const handleDownload = async (client) => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:8000/api/factures/${client.factureId}/download/`, {
+                responseType: 'blob',
+            });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `facture_${client.factureId}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Erreur lors du téléchargement de la facture:', error);
+            alert('Impossible de télécharger la facture.');
+        }
     };
+
+    const handlePayDirect = async (client) => {
+        try {
+            await axios.post('http://127.0.0.1:8000/api/pay-direct/', { clientId: client.id });
+            alert('Prestation marquée comme payée.');
+            // Rafraîchir la liste des clients
+            const response = await axios.get('http://127.0.0.1:8000/api/clients-with-details/');
+            setClients(response.data);
+        } catch (error) {
+            console.error('Erreur lors de la validation directe :', error);
+            alert('Impossible de marquer comme payé.');
+        }
+    };
+
+    const handleValidateDevis = async (devisId) => {
+        try {
+            await axios.post(`http://127.0.0.1:8000/api/devis/${devisId}/validate/`);
+            alert('Devis validé avec succès.');
+            // Rafraîchir la liste des clients
+            const response = await axios.get('http://127.0.0.1:8000/api/clients-with-details/');
+            setClients(response.data);
+        } catch (error) {
+            console.error('Erreur lors de la validation du devis :', error);
+            alert('Impossible de valider le devis.');
+        }
+    };
+
+
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white">
@@ -143,6 +220,7 @@ const ClientList = () => {
                 transition={{ duration: 0.5 }}
                 className="container mx-auto p-10"
             >
+                {/* Barre de recherche */}
                 <div className="mb-8 flex justify-between items-center">
                     <div className="relative w-1/2">
                         <FaSearch className="absolute left-3 top-3 text-gray-400" />
@@ -153,12 +231,8 @@ const ClientList = () => {
                             onChange={e => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <Link to="/add_client">
-                        <button className="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-full shadow-md flex items-center">
-                            <FaPlus className="mr-2" /> Ajouter un client
-                        </button>
-                    </Link>
                 </div>
+                {/* Tableau des clients */}
                 <div className="bg-white shadow-lg rounded-lg overflow-auto max-h-[70vh]">
                     <table className="min-w-full text-gray-800">
                         <thead>
@@ -180,6 +254,7 @@ const ClientList = () => {
                                     onDownload={handleDownload}
                                     onDelete={handleDelete}
                                     onEdit={handleEdit}
+                                    onPayDirect={handlePayDirect}
                                 />
                             ))}
                         </tbody>

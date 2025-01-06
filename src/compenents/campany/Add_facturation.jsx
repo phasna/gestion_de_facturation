@@ -1,104 +1,139 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { motion } from 'framer-motion';
-import { clients } from '../ClientData/ClientsData.jsx';
-import prestationsData from '../Prestation/Prestation.jsx';
 import { FaSearch, FaPlusCircle, FaTimesCircle } from 'react-icons/fa';
-import { IoIosSave } from "react-icons/io";
 
 const AddFacturation = () => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [clients, setClients] = useState([]);
     const [prestations, setPrestations] = useState([]);
+    const [facturePrestations, setFacturePrestations] = useState([]);
     const [selectedClient, setSelectedClient] = useState('');
-    const [selectedAppareil, setSelectedAppareil] = useState('');
-    const [showPrestations, setShowPrestations] = useState(false);
-    const [displayCount, setDisplayCount] = useState(2);
     const [searchTerm, setSearchTerm] = useState('');
-    const [selectedPrice, setSelectedPrice] = useState('');
+    const [showNewPrestationForm, setShowNewPrestationForm] = useState(false);
+    const [newPrestation, setNewPrestation] = useState({ nom: '', prix: '' });
 
-    const addPrestation = () => {
-        setPrestations([...prestations, { service: '', price: '' }]);
-        setShowPrestations(true);
+    // Charger les clients et prestations au montage
+    useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/clients-with-details/');
+                setClients(response.data);
+            } catch (error) {
+                console.error('Erreur de chargement des clients :', error);
+            }
+        };
+
+        const fetchPrestations = async () => {
+            try {
+                const response = await axios.get('http://127.0.0.1:8000/api/prestations/');
+                setPrestations(response.data);
+            } catch (error) {
+                console.error('Erreur de chargement des prestations :', error);
+            }
+        };
+
+        fetchClients();
+        fetchPrestations();
+    }, []);
+
+    // Ajouter une facture
+    const handleAddFacture = async () => {
+        if (!selectedClient || facturePrestations.length === 0) {
+            alert('Veuillez sélectionner un client et ajouter au moins une prestation.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/factures/add/', {
+                client: selectedClient,
+                prestations: facturePrestations,
+            });
+
+            // Mettre à jour le client avec le nouveau statut
+            const updatedClient = response.data.client;
+            setClients((prevClients) =>
+                prevClients.map((client) =>
+                    client.id === updatedClient.id ? updatedClient : client
+                )
+            );
+
+            alert('Facture créée avec succès');
+            setFacturePrestations([]);
+            setSelectedClient('');
+        } catch (error) {
+            console.error('Erreur lors de la création de la facture :', error.response?.data || error.message);
+            alert('Erreur lors de la création de la facture.');
+        }
     };
 
-    const handlePrestationChange = (index, e) => {
-        const { name, value } = e.target;
-        const newPrestations = [...prestations];
-        newPrestations[index][name] = value;
-        setPrestations(newPrestations);
+    // Ajouter une prestation à la facture
+    const handleAddPrestationToFacture = (prestation) => {
+        if (!prestation) return;
+        setFacturePrestations([...facturePrestations, { id: prestation.id, quantite: 1 }]);
     };
 
-    const handlePrestationSelect = (e) => {
-        const selectedOption = prestationsData.find(prestation => prestation.type === e.target.value);
-        setSelectedAppareil(selectedOption ? selectedOption.type : '');
-        setSelectedPrice(selectedOption ? selectedOption.prix : '');
+    // Ajouter une nouvelle prestation
+    const handleAddNewPrestation = async () => {
+        if (!newPrestation.nom || !newPrestation.prix) {
+            alert('Veuillez remplir tous les champs de la prestation.');
+            return;
+        }
+        try {
+            const response = await axios.post('http://127.0.0.1:8000/api/add-prestation/', newPrestation);
+            setPrestations([...prestations, response.data]);
+            setNewPrestation({ nom: '', prix: '' });
+            setShowNewPrestationForm(false);
+            alert('Prestation ajoutée avec succès');
+        } catch (error) {
+            console.error("Erreur lors de l'ajout de la prestation :", error);
+        }
     };
 
+    // Annuler et réinitialiser
     const handleCancel = () => {
-        setPrestations([]);
+        setFacturePrestations([]);
         setSelectedClient('');
-        setSelectedAppareil('');
-        setShowPrestations(false);
-        setSearchTerm('');
-        setSelectedPrice('');
+        setNewPrestation({ nom: '', prix: '' });
+        setShowNewPrestationForm(false);
     };
 
-    const filteredClients = clients.filter(client =>
-        client.firstName.toLowerCase().includes(searchTerm.toLowerCase())
+    // Filtrer les clients
+    const filteredClients = clients.filter((client) =>
+        `${client.nom} ${client.prenom}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const handleClientSelect = (clientName) => {
-        setSelectedClient(clientName);
-        setSearchTerm(clientName);
-        setIsOpen(false);
-    };
-
     return (
-        <motion.div
-            className="container mx-auto max-w-full p-10 bg-white min-h-screen bg-gradient-to-r from-blue-500 to-purple-600"
-        >
+        <motion.div className="container mx-auto max-w-full p-10 bg-white min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
             <motion.h2
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="text-4xl font-bold text-center mb-10 text-white">Créer une Facture</motion.h2>
+                className="text-4xl font-bold text-center mb-10 text-white"
+            >
+                Créer une Facture
+            </motion.h2>
 
             <motion.form
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
-                className="space-y-8 bg-white p-10 rounded-lg shadow-lg ">
-                {/* Barre de recherche avec icône */}
+                className="space-y-8 bg-white p-10 rounded-lg shadow-lg"
+            >
+                {/* Recherche client */}
                 <div className="relative w-1/3">
                     <input
                         type="text"
                         value={searchTerm}
-                        onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setIsOpen(e.target.value.length > 0);
-                        }}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Rechercher un client..."
-                        className="w-full border-2 bg-white text-gray-800 rounded-full pl-10 pr-4 py-2 focus:outline-none "
+                        className="w-full border-2 bg-white text-gray-800 rounded-full pl-10 pr-4 py-2 focus:outline-none"
                     />
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500">
                         <FaSearch />
                     </div>
-
-                    {isOpen && filteredClients.length > 0 && (
-                        <ul className="absolute z-10 bg-white border border-gray-300 rounded-lg shadow-lg mt-2 max-h-60 overflow-auto w-full">
-                            {filteredClients.map((client) => (
-                                <li
-                                    key={client.id}
-                                    onClick={() => handleClientSelect(client.firstName)}
-                                    className="px-4 py-2 cursor-pointer hover:bg-blue-100"
-                                >
-                                    {client.firstName}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
                 </div>
 
-                {/* Sélection du client */}
+                {/* Sélection client */}
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Client</label>
                     <select
@@ -108,93 +143,100 @@ const AddFacturation = () => {
                     >
                         <option value="">Sélectionner un client</option>
                         {filteredClients.map((client) => (
-                            <option key={client.id} value={client.firstName}>{client.firstName}</option>
+                            <option key={client.id} value={client.id}>
+                                {client.nom} {client.prenom}
+                            </option>
                         ))}
                     </select>
                 </div>
 
-                {/* Sélection de la prestation */}
+                {/* Sélection prestation */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Type de Prestations</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Prestations</label>
                     <select
-                        value={selectedAppareil}
-                        onChange={handlePrestationSelect}
+                        onChange={(e) =>
+                            handleAddPrestationToFacture(prestations.find((p) => p.id === parseInt(e.target.value)))
+                        }
                         className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
                         <option value="">Sélectionner une prestation</option>
-                        {prestationsData.map((prestation) => (
-                            <option key={prestation.id} value={prestation.type}>{prestation.type}</option>
+                        {prestations.map((prestation) => (
+                            <option key={prestation.id} value={prestation.id}>
+                                {prestation.nom} - {prestation.prix} €
+                            </option>
                         ))}
                     </select>
                 </div>
 
-                {/* Affichage du prix de la prestation */}
-                {selectedPrice && (
+                {/* Prestations ajoutées */}
+                {facturePrestations.length > 0 && (
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Prix</label>
-                        <input
-                            type="text"
-                            value={selectedPrice}
-                            readOnly
-                            className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        />
+                        <h3 className="text-lg font-bold mb-4">Prestations ajoutées à la facture :</h3>
+                        <ul>
+                            {facturePrestations.map((p, index) => {
+                                const prestation = prestations.find((prest) => prest.id === p.id);
+                                return (
+                                    <li key={index} className="mb-2">
+                                        {prestation?.nom} - {prestation?.prix} € (Quantité: {p.quantite})
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </div>
                 )}
 
-                {/* Section des prestations supplémentaires */}
-                {showPrestations && prestations.map((prestation, index) => (
-                    <div key={index} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Prestation</label>
-                            <input
-                                type="text"
-                                name="service"
-                                value={prestation.service}
-                                onChange={(e) => handlePrestationChange(index, e)}
-                                className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                placeholder="Nom de la prestation"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Prix</label>
-                            <input
-                                type="number"
-                                name="price"
-                                value={prestation.price}
-                                onChange={(e) => handlePrestationChange(index, e)}
-                                className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                placeholder="Prix de la prestation"
-                            />
-                        </div>
-                    </div>
-                ))}
-
-                {/* Boutons */}
-                <div className="flex justify-between items-center">
-                    <div className={"flex flex-col space-y-4"}>
+                {/* Ajouter une nouvelle prestation */}
+                <div>
                     <button
                         type="button"
-                        onClick={addPrestation}
+                        onClick={() => setShowNewPrestationForm(!showNewPrestationForm)}
                         className="flex items-center justify-center px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300 ease-in-out"
                     >
-                        <FaPlusCircle className="mr-2"/>
+                        <FaPlusCircle className="mr-2" />
                         Ajouter une prestation
                     </button>
+
+                    {showNewPrestationForm && (
+                        <div className="mt-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">Nom de la prestation</label>
+                            <input
+                                type="text"
+                                value={newPrestation.nom}
+                                onChange={(e) => setNewPrestation({ ...newPrestation, nom: e.target.value })}
+                                className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+                            <label className="block text-sm font-medium text-gray-700 mt-4">Prix</label>
+                            <input
+                                type="number"
+                                value={newPrestation.prix}
+                                onChange={(e) => setNewPrestation({ ...newPrestation, prix: e.target.value })}
+                                className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            />
+                            <button
+                                type="button"
+                                onClick={handleAddNewPrestation}
+                                className="mt-4 px-4 py-2 bg-green-500 text-white font-bold rounded-lg shadow-md hover:bg-green-600"
+                            >
+                                Enregistrer la prestation
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Boutons */}
+                <div className="flex justify-between">
                     <button
                         type="button"
-                        onClick={addPrestation}
-                        className="flex items-center justify-center px-4 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 transition duration-300 ease-in-out"
+                        onClick={handleAddFacture}
+                        className="px-4 py-2 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-blue-600"
                     >
-                        <IoIosSave className="mr-2"/>
-                        Enregistrer
+                        Enregistrer la facture
                     </button>
-                    </div>
                     <button
                         type="button"
                         onClick={handleCancel}
-                        className="flex items-center justify-center px-4 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-300 ease-in-out"
+                        className="px-4 py-2 bg-red-500 text-white font-bold rounded-lg shadow-md hover:bg-red-600"
                     >
-                        <FaTimesCircle className="mr-2"/>
                         Annuler
                     </button>
                 </div>
