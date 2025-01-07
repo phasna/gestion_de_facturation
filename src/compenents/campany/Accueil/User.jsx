@@ -12,9 +12,9 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 const [totalResponse, ventesResponse, clientsResponse] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/chiffre-affaires-total/'), // Chiffre d'affaires total
-                    axios.get('http://127.0.0.1:8000/api/total-ventes/'), // Total des ventes
-                    axios.get('http://127.0.0.1:8000/api/clients-actifs/') // Clients actifs
+                    axios.get('http://100.107.164.18:8000/api/chiffre-affaires-total/'), // Chiffre d'affaires total
+                    axios.get('http://100.107.164.18:8000/api/total-ventes/'), // Total des ventes
+                    axios.get('http://100.107.164.18:8000/api/clients-actifs/') // Clients actifs
                 ]);
 
                 setChiffreAffairesTotal(totalResponse.data.chiffre_affaires_total);

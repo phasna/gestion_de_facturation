@@ -25,7 +25,7 @@ const FacturationForm = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/add-client/', {
+            const response = await axios.post('http://100.107.164.18:8000/api/add-client/', {
                 nom: formData.name,
                 prenom: formData.prenom,
                 email: formData.email,

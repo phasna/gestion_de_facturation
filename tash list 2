@@ -1,0 +1,73 @@
+[33m9b763f9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: checkout: moving from Phasna to main
+[33mfcc87b7[m[33m ([m[1;32mPhasna[m[33m)[m HEAD@{1}: checkout: moving from main to Phasna
+[33m9b763f9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{2}: commit: Fusion du fichier backend depuis saleh
+[33ma2e5e3e[m HEAD@{3}: checkout: moving from saleh to main
+[33mc901f2c[m[33m ([m[1;32msaleh[m[33m)[m HEAD@{4}: commit: Ajout/modification du fichier backend
+[33m3591506[m HEAD@{5}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{6}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{7}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{8}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{9}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{10}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{11}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{12}: merge saleh: updating HEAD
+[33ma2e5e3e[m HEAD@{13}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{14}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{15}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{16}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{17}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{18}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{19}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{20}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{21}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{22}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{23}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{24}: checkout: moving from main to saleh
+[33ma2e5e3e[m HEAD@{25}: rebase (finish): returning to refs/heads/main
+[33ma2e5e3e[m HEAD@{26}: rebase (pick): Modifications de la page utilisateur,
+[33m4858a04[m HEAD@{27}: rebase (start): checkout origin/main
+[33m01e1141[m HEAD@{28}: reset: moving to HEAD
+[33m01e1141[m HEAD@{29}: rebase (finish): returning to refs/heads/main
+[33m01e1141[m HEAD@{30}: rebase (continue): Modifications de la page utilisateur,
+[33m95c7099[m HEAD@{31}: rebase (start): checkout origin/main
+[33mf325968[m HEAD@{32}: checkout: moving from saleh to main
+[33m3591506[m HEAD@{33}: checkout: moving from Phasna to saleh
+[33mfcc87b7[m[33m ([m[1;32mPhasna[m[33m)[m HEAD@{34}: checkout: moving from e5da7dd686a153f824b9e6daf3c43f15de9207b1 to Phasna
+[33me5da7dd[m[33m ([m[1;31morigin/saleh[m[33m)[m HEAD@{35}: checkout: moving from saleh to e5da7dd686a153f824b9e6daf3c43f15de9207b1
+[33m3591506[m HEAD@{36}: commit (merge): Merge branch 'Phasna' of https://github.com/phasna/gestion_de_facturation into saleh
+[33me5da7dd[m[33m ([m[1;31morigin/saleh[m[33m)[m HEAD@{37}: commit: Modifications de la page utilisateur,
+[33m5ad5184[m HEAD@{38}: commit: add gitignore
+[33m319b545[m HEAD@{39}: checkout: moving from Phasna to saleh
+[33mfcc87b7[m[33m ([m[1;32mPhasna[m[33m)[m HEAD@{40}: checkout: moving from main to Phasna
+[33mf325968[m HEAD@{41}: checkout: moving from saleh to main
+[33m319b545[m HEAD@{42}: commit: saleh
+[33mb0a3346[m HEAD@{43}: checkout: moving from main to saleh
+[33mf325968[m HEAD@{44}: checkout: moving from saleh to main
+[33mb0a3346[m HEAD@{45}: commit (merge): connections back front
+[33m506453e[m HEAD@{46}: reset: moving to HEAD
+[33m506453e[m HEAD@{47}: reset: moving to HEAD
+[33m506453e[m HEAD@{48}: commit: Sauvegarde des modifications backend
+[33mda5585d[m HEAD@{49}: checkout: moving from main to saleh
+[33mf325968[m HEAD@{50}: checkout: moving from saleh to main
+[33mda5585d[m HEAD@{51}: checkout: moving from main to saleh
+[33mf325968[m HEAD@{52}: checkout: moving from saleh to main
+[33mda5585d[m HEAD@{53}: merge origin/saleh: Merge made by the 'ort' strategy.
+[33m9f90c2d[m HEAD@{54}: commit (amend): Modifications de la page utilisateur,
+[33m6f3e3f5[m HEAD@{55}: rebase (finish): returning to refs/heads/saleh
+[33m6f3e3f5[m HEAD@{56}: rebase (start): checkout origin/saleh
+[33ma95ebbe[m HEAD@{57}: commit (amend): Modifications de la page utilisateur,
+[33m6f3e3f5[m HEAD@{58}: checkout: moving from main to saleh
+[33mf325968[m HEAD@{59}: commit: Modifications de la page utilisateur,
+[33m182a17f[m HEAD@{60}: checkout: moving from saleh to main
+[33m6f3e3f5[m HEAD@{61}: commit (amend): Modifications de la page utilisateur,
+[33m5bbcbe3[m HEAD@{62}: commit: Modifications de la page utilisateur,
+[33ma86678e[m HEAD@{63}: commit: Modifications de la page utilisateur,
+[33m965e309[m HEAD@{64}: commit (merge): Merge remote-tracking branch 'origin/main' into saleh
+[33ma8fd949[m HEAD@{65}: checkout: moving from main to saleh
+[33mb52fcdc[m HEAD@{66}: pull: Fast-forward
+[33mf873310[m HEAD@{67}: checkout: moving from saleh to main
+[33ma8fd949[m HEAD@{68}: commit: ceci est le backend du projet
+[33mf873310[m HEAD@{69}: checkout: moving from main to saleh
+[33mf873310[m HEAD@{70}: pull: Fast-forward
+[33m2f6bd2b[m HEAD@{71}: pull: Fast-forward
+[33m3468ce2[m HEAD@{72}: clone: from https://github.com/phasna/gestion_de_facturation.git

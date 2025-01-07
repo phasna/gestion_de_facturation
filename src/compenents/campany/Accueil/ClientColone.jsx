@@ -9,7 +9,7 @@ const ClientColonne = () => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/historique-clients/');
+                const response = await axios.get('http://100.107.164.18:8000/api/historique-clients/');
                 setClients(response.data);
             } catch (error) {
                 console.error('Erreur lors du chargement des clients récents :', error);

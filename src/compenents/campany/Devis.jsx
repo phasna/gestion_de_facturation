@@ -19,9 +19,9 @@ const Devis = () => {
         const fetchData = async () => {
             try {
                 const [clientsRes, prestationsRes, devisRes] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/clients/'),
-                    axios.get('http://127.0.0.1:8000/api/prestations/'),
-                    axios.get('http://127.0.0.1:8000/api/devis/')
+                    axios.get('http://100.107.164.18:8000/api/clients/'),
+                    axios.get('http://100.107.164.18:8000/api/prestations/'),
+                    axios.get('http://100.107.164.18:8000/api/devis/')
                 ]);
                 setClients(clientsRes.data);
                 setPrestations(prestationsRes.data);
@@ -66,7 +66,7 @@ const Devis = () => {
                 client: selectedClient,
                 prestations: devisPrestations,
             };
-            const response = await axios.post('http://127.0.0.1:8000/api/devis/add/', payload);
+            const response = await axios.post('http://100.107.164.18:8000/api/devis/add/', payload);
             alert('Devis enregistré avec succès !');
             setSelectedClient('');
             setDevisPrestations([]);
@@ -80,7 +80,7 @@ const Devis = () => {
     // Valider un devis
     const handleValidateDevis = async (devisId) => {
         try {
-            await axios.post(`http://127.0.0.1:8000/api/devis/${devisId}/validate/`);
+            await axios.post(`http://100.107.164.18:8000/api/devis/${devisId}/validate/`);
             const updatedDevisList = devisList.map(devis =>
                 devis.id === devisId ? { ...devis, validé: true } : devis
             );

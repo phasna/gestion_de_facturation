@@ -16,7 +16,7 @@ const UpdateUser = () => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/clients/');
+                const response = await axios.get('http://100.107.164.18:8000/api/clients/');
                 setClients(response.data);
             } catch (error) {
                 console.error('Erreur lors de la récupération des clients :', error);
@@ -30,7 +30,7 @@ const UpdateUser = () => {
         if (selectedClientId) {
             const fetchClient = async () => {
                 try {
-                    const response = await axios.get(`http://127.0.0.1:8000/api/clients/${selectedClientId}/`);
+                    const response = await axios.get(`http://100.107.164.18:8000/api/clients/${selectedClientId}/`);
                     setClient(response.data);
                 } catch (error) {
                     console.error('Erreur lors de la récupération des données du client :', error);
@@ -44,7 +44,7 @@ const UpdateUser = () => {
     const handleUpdate = async (updatedClient) => {
         try {
             await axios.put(
-                `http://127.0.0.1:8000/api/clients/${selectedClientId}/update/`,
+                `http://100.107.164.18:8000/api/clients/${selectedClientId}/update/`,
                 updatedClient,
                 {
                     headers: {
@@ -63,7 +63,7 @@ const UpdateUser = () => {
     const handleDelete = async () => {
         if (window.confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
             try {
-                await axios.delete(`http://127.0.0.1:8000/api/clients/${selectedClientId}/delete/`, {
+                await axios.delete(`http://100.107.164.18:8000/api/clients/${selectedClientId}/delete/`, {
                     headers: {
                         'X-CSRFToken': getCsrfToken(), // Optionnel si CSRF activé
                     },

@@ -89,7 +89,7 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 // Appel de l'API pour récupérer les données
-                const response = await axios.get('http://127.0.0.1:8000/api/chiffre-affaires-par-mois/');
+                const response = await axios.get('http://100.107.164.18:8000/api/chiffre-affaires-par-mois/');
                 const data = response.data;
 
                 if (data && data.length > 0) {

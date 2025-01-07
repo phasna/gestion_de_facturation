@@ -16,7 +16,7 @@ const AddFacturation = () => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/clients-with-details/');
+                const response = await axios.get('http://100.107.164.18:8000/api/clients-with-details/');
                 setClients(response.data);
             } catch (error) {
                 console.error('Erreur de chargement des clients :', error);
@@ -25,7 +25,7 @@ const AddFacturation = () => {
 
         const fetchPrestations = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/prestations/');
+                const response = await axios.get('http://100.107.164.18:8000/api/prestations/');
                 setPrestations(response.data);
             } catch (error) {
                 console.error('Erreur de chargement des prestations :', error);

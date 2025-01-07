@@ -107,7 +107,7 @@ const ClientList = () => {
     useEffect(() => {
       const fetchClients = async () => {
         try {
-            const response = await axios.get('http://127.0.0.1:8000/api/clients-with-details/');
+            const response = await axios.get('http://100.107.164.18:8000/api/clients-with-details/');
             const updatedClients = response.data.map(client => ({
                 ...client,
                 price: Number(client.price) || 0,  // Convertir le prix en nombre
@@ -129,7 +129,7 @@ const ClientList = () => {
     const handleDelete = async (client) => {
         if (window.confirm(`Voulez-vous vraiment supprimer ${client.nom} ?`)) {
             try {
-                const response = await axios.delete(`http://127.0.0.1:8000/api/clients/${client.id}/`);
+                const response = await axios.delete(`http://100.107.164.18:8000/api/clients/${client.id}/`);
                 if (response.status === 204) {
                     alert('Client supprimé avec succès');
                     setClients(clients.filter((c) => c.id !== client.id));
@@ -148,7 +148,7 @@ const ClientList = () => {
 
     const handleView = async (client) => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/factures/${client.factureId}/`);
+            const response = await axios.get(`http://100.107.164.18:8000/api/factures/${client.factureId}/`);
             console.log(response.data);
         } catch (error) {
             console.error('Erreur lors de la visualisation de la facture :', error);
@@ -158,7 +158,7 @@ const ClientList = () => {
 
     const handleDownload = async (client) => {
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/api/factures/${client.factureId}/download/`, {
+            const response = await axios.get(`http://100.107.164.18:8000/api/factures/${client.factureId}/download/`, {
                 responseType: 'blob',
             });
             const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -176,10 +176,10 @@ const ClientList = () => {
 
     const handlePayDirect = async (client) => {
         try {
-            await axios.post('http://127.0.0.1:8000/api/pay-direct/', { clientId: client.id });
+            await axios.post('http://100.107.164.18:8000/api/pay-direct/', { clientId: client.id });
             alert('Prestation marquée comme payée.');
             // Rafraîchir la liste des clients
-            const response = await axios.get('http://127.0.0.1:8000/api/clients-with-details/');
+            const response = await axios.get('http://100.107.164.18:8000/api/clients-with-details/');
             setClients(response.data);
         } catch (error) {
             console.error('Erreur lors de la validation directe :', error);
@@ -189,10 +189,10 @@ const ClientList = () => {
 
     const handleValidateDevis = async (devisId) => {
         try {
-            await axios.post(`http://127.0.0.1:8000/api/devis/${devisId}/validate/`);
+            await axios.post(`http://100.107.164.18:8000/api/devis/${devisId}/validate/`);
             alert('Devis validé avec succès.');
             // Rafraîchir la liste des clients
-            const response = await axios.get('http://127.0.0.1:8000/api/clients-with-details/');
+            const response = await axios.get('http://100.107.164.18:8000/api/clients-with-details/');
             setClients(response.data);
         } catch (error) {
             console.error('Erreur lors de la validation du devis :', error);
