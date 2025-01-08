@@ -13,6 +13,9 @@ import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { LiaMoneyCheckAltSolid } from "react-icons/lia";
 import { IoAddCircle } from "react-icons/io5";
 import { BiChevronDown } from "react-icons/bi"; // Nouvelle icône pour indiquer le dropdown
+import { IoIosPersonAdd } from "react-icons/io";
+import { GrUpdate } from "react-icons/gr";
+import { MdMoneyOffCsred } from "react-icons/md";
 
 /* Composant Menu */
 const Menu = () => {
@@ -67,7 +70,7 @@ const Menu = () => {
                         className="flex items-center p-4 rounded hover:bg-black hover:bg-opacity-25 hover:text-white transition-all duration-300 ease-in-out w-full justify-between"
                     >
                         <div className="flex items-center">
-                            <MdAddCircleOutline className="mr-3"/> Ajouter des clients
+                            <MdAddCircleOutline className="mr-3"/> Ajouter / Modifier d'un client
                         </div>
                         {/* Icône qui tourne pour indiquer le dropdown */}
                         <BiChevronDown
@@ -86,7 +89,7 @@ const Menu = () => {
                                             : 'flex items-center p-2 rounded hover:bg-black hover:bg-opacity-25 hover:text-white transition-all duration-300 ease-in-out'
                                     }
                                 >
-                                    Ajouter un client
+                                    <IoIosPersonAdd/> <span className={"ml-2"}>Ajouter un client</span>
                                 </NavLink>
                             </li>
                             <li>
@@ -98,7 +101,7 @@ const Menu = () => {
                                             : 'flex items-center p-2 rounded hover:bg-black hover:bg-opacity-25 hover:text-white transition-all duration-300 ease-in-out'
                                     }
                                 >
-                                    Modifier un client
+                                    <GrUpdate/> <span className={"ml-2"}> Modifier un client </span>
                                 </NavLink>
                             </li>
                         </ul>
@@ -133,6 +136,19 @@ const Menu = () => {
 
                 <li>
                     <NavLink
+                        to="/Listedesdevis"
+                        className={({isActive}) =>
+                            isActive
+                                ? 'flex items-center p-4 rounded bg-black hover:bg-opacity-25 text-white transition-all duration-300 ease-in-out'
+                                : 'flex items-center p-4 rounded hover:bg-black hover:bg-opacity-25 hover:text-white transition-all duration-300 ease-in-out'
+                        }
+                    >
+                        <MdMoneyOffCsred className="mr-3"/> Liste des devis
+                    </NavLink>
+                </li>
+
+                <li>
+                    <NavLink
                         to="/add_user"
                         className={({isActive}) =>
                             isActive
@@ -160,7 +176,6 @@ const Menu = () => {
         </div>
     );
 };
-
 
 
 export default Menu;

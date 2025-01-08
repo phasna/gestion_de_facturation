@@ -13,13 +13,11 @@ const Accueil = () => {
 
             {/* Section Graphiques */}
             <div className="mt-10">
-                <h2 className="text-white text-2xl font-bold mb-4">Performances et Statistiques</h2>
                 <Graphique />
             </div>
 
             {/* Section Historique des Clients */}
             <div className="mt-10">
-                <h2 className="text-white text-2xl font-bold mb-4">Historique des Clients</h2>
                 <Client />
             </div>
         </div>

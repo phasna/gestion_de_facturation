@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useState } from "react";
 import axios from 'axios';
 
+
 const FacturationForm = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -57,6 +58,15 @@ const FacturationForm = () => {
         }
     };
 
+    const [image, setImage] = useState(null); // État pour gérer l'image
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+        }
+    };
+
     return (
         <motion.div
             onClick={() => {}}
@@ -72,9 +82,9 @@ const FacturationForm = () => {
 
             <motion.form
                 onSubmit={handleSubmit}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
                 className="space-y-6 bg-white p-10 rounded-lg shadow-lg">
 
                 {/* Coordonnées */}
@@ -147,6 +157,25 @@ const FacturationForm = () => {
                         className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         placeholder="Téléphone du client"
                     />
+                </div>
+
+                <div>
+                    <label htmlFor="image" className="mb-2">
+                        Ajouter un profile
+                    </label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="mt-1 block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    />
+                    {image && (
+                        <p className="mt-2 text-sm text-gray-600">
+                            Fichier sélectionné : <span className="font-medium">{image.name}</span>
+                        </p>
+                    )}
                 </div>
 
                 {/* Adresse de facturation */}

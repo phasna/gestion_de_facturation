@@ -8,6 +8,14 @@ const AddFacturation = () => {
     const [prestationsService] = useState(['Crée un site', 'Développer un application', 'Reprendre anciaent site']); // Liste des prestationsService
     const [selectedClient, setSelectedClient] = useState('');
     const [selected_une_poste, setSelectedAppareil] = useState('');
+    const [image, setImage] = useState(null); // État pour gérer l'image
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+        }
+    };
 
 
     return (
@@ -22,9 +30,9 @@ const AddFacturation = () => {
                 className="text-4xl font-semibold mb-6 text-center lg:mb-10 lg:mt-10 text-white">Ajouter nouveau utilisateur</motion.h2>
 
             <motion.form
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0, scale: 0.8}}
+                animate={{opacity: 1, scale: 1}}
+                transition={{duration: 0.5}}
                 className="space-y-6 bg-white p-10 rounded-lg shadow-lg ">
 
                 <div className={"flex flex-row space-x-3 "}>
@@ -102,7 +110,7 @@ const AddFacturation = () => {
                     </div>
                 </div>
 
-                <div >
+                <div>
                     <label htmlFor="address" className="block text-sm font-medium text-gray-700">Adresse</label>
                     <input
                         type="text"
@@ -113,10 +121,28 @@ const AddFacturation = () => {
                         required
                     />
                 </div>
-
+                <div>
+                    <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+                        Ajouter une image
+                    </label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    />
+                    {image && (
+                        <p className="mt-2 text-sm text-gray-600">
+                            Fichier sélectionné : <span className="font-medium">{image.name}</span>
+                        </p>
+                    )}
+                </div>
 
                 <div>
-                    <label htmlFor="client" className="block text-sm font-medium text-gray-700">Role du utilisateur</label>
+                    <label htmlFor="client" className="block text-sm font-medium text-gray-700">Role du
+                        utilisateur</label>
                     <select
                         id="client"
                         value={selectedClient}

@@ -37,6 +37,7 @@ const Devis = () => {
 
     // Ajouter une prestation au devis
     const handleAddPrestationToDevis = () => {
+        console.log('selectedPrestation:', selectedPrestation); // Debug
         if (!selectedPrestation) return;
 
         const prestation = prestations.find(p => p.nom === selectedPrestation);
@@ -56,6 +57,9 @@ const Devis = () => {
 
     // Enregistrer un devis
     const handleSaveDevis = async () => {
+        console.log('selectedClient:', selectedClient); // Debug
+        console.log('devisPrestations:', devisPrestations); // Debug
+
         if (!selectedClient || devisPrestations.length === 0) {
             alert('Veuillez sélectionner un client et ajouter au moins une prestation.');
             return;
@@ -77,33 +81,17 @@ const Devis = () => {
         }
     };
 
-    // Valider un devis
-    const handleValidateDevis = async (devisId) => {
-        try {
-            await axios.post(`http://100.107.164.18:8000/api/devis/${devisId}/validate/`);
-            const updatedDevisList = devisList.map(devis =>
-                devis.id === devisId ? { ...devis, validé: true } : devis
-            );
-            setDevisList(updatedDevisList);
-            alert('Le devis a été validé avec succès et converti en facture.');
-        } catch (error) {
-            console.error('Erreur lors de la validation du devis :', error);
-            alert('Une erreur est survenue lors de la validation du devis.');
-        }
-    };
-
     // Filtrer les clients par le terme de recherche
     const filteredClients = clients.filter(client =>
         client.nom.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
-        <motion.div
-            className="container mx-auto max-w-full p-10 bg-white min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
+        <motion.div className="container mx-auto max-w-full p-10 bg-white min-h-screen bg-gradient-to-r from-blue-500 to-purple-600">
             <motion.h2
-                initial={{opacity: 0, scale: 0.9}}
-                animate={{opacity: 1, scale: 1}}
-                transition={{duration: 0.5}}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
                 className="text-4xl font-bold text-center mb-10 text-white"
             >
                 Créer un Devis
@@ -111,11 +99,12 @@ const Devis = () => {
 
             {/* Formulaire de création de devis */}
             <motion.form
-                initial={{opacity: 0, scale: 0.9}}
-                animate={{opacity: 1, scale: 1}}
-                transition={{duration: 0.5}}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
                 className="space-y-8 bg-white p-10 rounded-lg shadow-lg"
             >
+                {/* Recherche client */}
                 <div className="relative w-1/3">
                     <input
                         type="text"
@@ -128,7 +117,7 @@ const Devis = () => {
                         className="w-full border-2 bg-white text-gray-800 rounded-full pl-10 pr-4 py-2 focus:outline-none"
                     />
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500">
-                        <FaSearch/>
+                        <FaSearch />
                     </div>
 
                     {isOpen && filteredClients.length > 0 && (
@@ -224,12 +213,12 @@ const Devis = () => {
                 <div className="bg-white p-4 rounded-lg shadow-md">
                     {devisList.map((devis, index) => (
                         <div
-                            key={devis.id || index} // Utilisez 'id' comme clé principale et un 'index' comme sauvegarde
+                            key={devis.id || index}
                             className="flex justify-between items-center border-b py-2"
                         >
-                <span>
-                    {devis.client_nom || devis.client_prenom || 'Nom inconnu'} - Total: {devis.total}€
-                </span>
+                            <span>
+                                {devis.client_nom || devis.client_prenom || 'Nom inconnu'} - Total: {devis.total}€
+                            </span>
                             {!devis.validé && (
                                 <button
                                     className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600"
