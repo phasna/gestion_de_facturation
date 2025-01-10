@@ -12,6 +12,7 @@ import Identifian from "./compenents/Connection/Identifian.jsx";
 import Mdp from "./compenents/Connection/mdpoublier.jsx";
 import Layout from "./compenents/Layout.jsx";
 import Layout_user from "./compenents/Layout_user.jsx";
+import ListeDesDevis from "./compenents/campany/ListeDesDevis.jsx";
 
 /*--------------------- Page User ---------------*/
 
@@ -37,6 +38,7 @@ const App = () => {
                     <Route path="/profile" element={<Profile/>}/>
                     <Route path="/add_user" element={<Add_user/>}/>
                     <Route path="/devis" element={<Devie/>}/>
+                    <Route path="/Listedesdevis" element={<ListeDesDevis/>}/>
                     <Route path="/updateUser" element={<UpdateUser/>}/>
                 </Route>
 

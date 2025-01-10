@@ -130,7 +130,7 @@ const Dashboard = () => {
 
     return (
         <div className="p-10">
-            <h2 className="text-2xl font-bold mb-4">Graphique des Revenus Mensuels</h2>
+            <h2 className="text-4xl font-bold mb-10 text-white">Graphique des Revenus Mensuels</h2>
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <Line data={lineData} options={lineOptions} />
             </div>

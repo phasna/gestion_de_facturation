@@ -38,15 +38,15 @@ const AddFacturation = () => {
 
     // Ajouter une facture
     const handleAddFacture = async () => {
-        if (!selectedClient || facturePrestations.length === 0) {
-            alert('Veuillez sélectionner un client et ajouter au moins une prestation.');
+        if (!selectedClient) {
+            alert('Veuillez sélectionner un client.');
             return;
         }
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/factures/add/', {
+            const response = await axios.post('http://100.107.164.18:8000/api/factures/add/', {
                 client: selectedClient,
-                prestations: facturePrestations,
+                prestations: facturePrestations.length > 0 ? facturePrestations : [],
             });
 
             // Mettre à jour le client avec le nouveau statut
@@ -69,7 +69,12 @@ const AddFacturation = () => {
     // Ajouter une prestation à la facture
     const handleAddPrestationToFacture = (prestation) => {
         if (!prestation) return;
-        setFacturePrestations([...facturePrestations, { id: prestation.id, quantite: 1 }]);
+        setFacturePrestations((prev) => [...prev, { id: prestation.id, quantite: 1, prix: prestation.prix }]);
+    };
+
+    // Calculer le total de la facture
+    const calculateTotal = () => {
+        return facturePrestations.reduce((total, prestation) => total + prestation.prix * prestation.quantite, 0);
     };
 
     // Ajouter une nouvelle prestation
@@ -79,7 +84,7 @@ const AddFacturation = () => {
             return;
         }
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/add-prestation/', newPrestation);
+            const response = await axios.post('http://100.107.164.18:8000/api/add-prestation/', newPrestation);
             setPrestations([...prestations, response.data]);
             setNewPrestation({ nom: '', prix: '' });
             setShowNewPrestationForm(false);
@@ -182,6 +187,7 @@ const AddFacturation = () => {
                                 );
                             })}
                         </ul>
+                        <p className="text-lg font-bold mt-4">Total : {calculateTotal()} €</p>
                     </div>
                 )}
 
@@ -209,7 +215,7 @@ const AddFacturation = () => {
                             <input
                                 type="number"
                                 value={newPrestation.prix}
-                                onChange={(e) => setNewPrestation({ ...newPrestation, prix: e.target.value })}
+                                onChange={(e) => setNewPrestation({ ...newPrestation, prix: parseFloat(e.target.value) || 0 })}
                                 className="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                             />
                             <button

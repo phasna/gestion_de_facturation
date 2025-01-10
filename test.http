@@ -1,5 +1,7 @@
 ### GET request to example server
 #GET http://172.0.0.2:8000/api/clients-with-details/
-GET http://100.107.164.18:8000/api/prestations/
-
+#GET http://100.107.164.18:8000/api/prestations/
+#GET http://100.107.164.18:8000/api/clients/
+#GET http://100.107.164.18:8000/api/factures/add/
+GET http://100.107.164.18:8000/api/devis/
 ###
