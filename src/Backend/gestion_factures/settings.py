@@ -65,7 +65,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://127.0.0.1:8000',
 ]
 
-# Activer certaines méthodes HTTP
+
 CORS_ALLOW_METHODS = [
     'GET',
     'POST',
@@ -75,7 +75,7 @@ CORS_ALLOW_METHODS = [
     'OPTIONS'
 ]
 
-# Autoriser certains headers
+
 CORS_ALLOW_HEADERS = [
     'authorization',
     'content-type',
@@ -83,7 +83,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# Si nécessaire : définir les origines qui ne sont pas autorisées
+
 # CORS_ORIGIN_DENYLIST = [
 #     'http://some-malicious-site.com',
 # ]

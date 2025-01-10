@@ -30,20 +30,20 @@ def register_user(request):
         try:
             data = json.loads(request.body)
 
-            # Valider les champs requis
+
             required_fields = ['nom', 'prenom', 'email', 'username', 'password']
             for field in required_fields:
                 if not data.get(field):
                     return JsonResponse({'error': f'Le champ {field} est requis'}, status=400)
 
-            # Créer l'utilisateur
+
             connection = Connection.objects.create_user(
                 username=data['username'],
                 email=data['email'],
                 password=data['password']
             )
 
-            # Lier les informations du client à l'utilisateur
+
             Client_infos.objects.create(
                 nom=data['nom'],
                 prenom=data['prenom'],
@@ -142,13 +142,13 @@ def create_or_add_client(request):
         try:
             data = json.loads(request.body)
 
-            # Validation des champs requis
+
             required_fields = ['nom', 'prenom', 'email', 'siret', 'tel_mobile', 'ville']
             for field in required_fields:
                 if field not in data or not data[field]:
                     return JsonResponse({"error": f"Le champ {field} est obligatoire."}, status=400)
 
-            # Création du client
+
             client = Client_infos.objects.create(
                 nom=data['nom'],
                 prenom=data['prenom'],
